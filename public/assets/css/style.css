@@ -1,0 +1,42 @@
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+#content{
+    margin-top: 80px;
+}
+
+.router-link-exact-active{
+    font-weight: bold;
+}
+
+.card{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.table{
+    font-size: 14px;
+}
+
+.canvas_grafik{
+  height:350px !important;
+}
+
+.jumbotron{
+    background-color: #fff;
+}
+
+.a_none{
+    text-decoration: none;
+    color: #333;
+}
+
+.a_none:hover{
+    text-decoration: none;
+    color:#333;
+}
+
+ .pilihan_jawaban{
+     margin-bottom: 10px;
+ }

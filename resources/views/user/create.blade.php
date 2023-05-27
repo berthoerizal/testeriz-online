@@ -19,7 +19,8 @@
                     <div class="form-group">
                         <label for="id_role">Akses Level</label>
                         <select class="form-control form-control-sm" id="id_role" name="id_role">
-                            <option value="1">Anggota</option>
+                            <option value="0">Jawab Ujian</option>
+                            <option value="1">Buat Soal</option>
                             <option value="21">Administrator</option>
                         </select>
                     </div>
@@ -32,6 +33,11 @@
                         <label for="email">Email</label>
                         <input type="email" class="form-control form-control-sm" name="email" id="email"
                             placeholder="Email" value="{{ old('email') }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control form-control-sm" name="phone" id="phone"
+                            placeholder="Nomor Hp" value="{{ old('phone') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>

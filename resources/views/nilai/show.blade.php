@@ -31,7 +31,6 @@
             position: relative;
             border: 1px solid black;
         }
-
     </style>
     <!-- Begin Page Content -->
     <div class="container-fluid">
@@ -44,13 +43,12 @@
             <div class="alert alert-secondary" role="alert">
                 Nilai belum di-<b>Publish</b> oleh <b>{{ $soal->name }}</b>.
             </div>
-        @elseif($soal->status_nilai=='publish' || Auth::user()->id_role=='21')
+        @elseif($soal->status_nilai == 'publish' || Auth::user()->id_role == '21')
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <div class="card">
                         @if ($user->gambar != null)
-                            <img class="card-img-top" src="{{ asset('assets/images/' . $user->gambar) }}"
-                                alt="Card image cap">
+                            <img class="card-img-top" src="{{ asset('assets/images/' . $user->gambar) }}" alt="Card image cap">
                         @else
                             <img class="card-img-top" src="{{ asset('assets/images/profiledefault.PNG') }}"
                                 alt="Card image cap">
@@ -61,10 +59,14 @@
                     </div>
                 </div>
                 <div class="col-md-9">
-                    <div class="card shadow col-md-12 mb-4">
+                    <div class="card shadow  mb-4">
                         <div class="card-header">
                             <div class="float-left">
                                 Informasi Nilai
+                            </div>
+                            <div class="float-right">
+                                <a href="{{ route('profile.show', Crypt::encrypt($user->id)) }}" target="_blank"
+                                    class="btn btn-sm btn-primary"><i class="fas fa-user"></i> Profile</a>
                             </div>
                         </div>
 
@@ -73,19 +75,40 @@
                                 <table class="table table-bordered" width="100%" cellspacing="0">
                                     <tbody>
                                         <tr>
-                                            <td><i class="fa fa-user"></i> Nama Peserta</td>
+                                            <td class="text-center"><i class="fa fa-user"></i></td>
+                                            <td>Nama Peserta</td>
                                             <td>{{ $nilai->nama_peserta }}</td>
                                         </tr>
                                         <tr>
-                                            <td><i class="fa fa-star"></i> Judul</td>
+                                            <td class="text-center"><i class="fa fa-star"></i></td>
+                                            <td>Judul</td>
                                             <td><b>{{ $nilai->judul_soal }}</b></td>
                                         </tr>
                                         <tr>
-                                            <td><i class="fa fa-question"></i> Jumlah Pertanyaan</td>
-                                            <td>{{ $jumlah_pertanyaan }}</td>
+                                            <td class="text-center"><i class="fa fa-star"></i></td>
+                                            <td>Kategori</td>
+                                            <td><b>{{ $soal->nama_jenis_soal }}</b></td>
                                         </tr>
                                         <tr>
-                                            <td><i class="fa fa-trophy"></i> Total Nilai</td>
+                                            <td class="text-center"><i class="fa fa-question"></i></td>
+                                            <td>Jumlah Pertanyaan</td>
+                                            <td>{{ $jumlah_pertanyaan }}</td>
+                                        </tr>
+                                        <?php if($soal->jenis_soal != 'essay'){ ?>
+                                        <tr>
+                                            <td class="text-center"><i class="fa fa-check"></i></td>
+                                            <td> Jawaban Benar</td>
+                                            <td>{{ $nilai->terjawab }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center"><i class="fa fa-times"></i></td>
+                                            <td>Jawaban Salah</td>
+                                            <td>{{ $jumlah_pertanyaan - $nilai->terjawab }}</td>
+                                        </tr>
+                                        <?php } ?>
+                                        <tr>
+                                            <td class="text-center"><i class="fa fa-trophy"></i></td>
+                                            <td>Total Nilai</td>
                                             <td>
                                                 <b><?php echo number_format($nilai->total_nilai); ?></b>
                                             </td>
@@ -152,7 +175,8 @@
                                                     </td>
                                                     <td width="5%" class="text-center">
                                                         @if ($soal->id_user == Auth::user()->id)
-                                                            <input type="hidden" name="id[]" value="{{ $jawab->id }}" />
+                                                            <input type="hidden" name="id[]"
+                                                                value="{{ $jawab->id }}" />
                                                             <input class="nilai_peserta" type="number" name="nilai[]"
                                                                 placeholder="..." id="nilai"
                                                                 value="{{ $jawab->status_jawab }}" required>
@@ -172,7 +196,7 @@
                     </div>
                 @else
                     <div class="col-md-12">
-                        <div class="card shadow col-md-12 mb-3">
+                        <div class="card shadow mb-3">
                             <div class="card-header">
                                 <div class="float-left">
                                     Kunci Jawaban
@@ -207,11 +231,11 @@
                                                     @endif
                                                 </td>
                                                 <td><?php echo $jawab->pertanyaan; ?></td>
-                                                <td style="background-color: #6AFB71; color:#333;">
+                                                <td style="background-color: #ABEAC5; color:#333;">
                                                     {{ $jawab->jawaban_benar }}
                                                 </td>
                                                 @if ($jawab->jawaban_user == $jawab->jawaban_benar)
-                                                    <td style="background-color: #6AFB71; color:#333;">
+                                                    <td style="background-color: #ABEAC5; color:#333;">
                                                         {{ $jawab->jawaban_user }}
                                                     </td>
                                                 @else

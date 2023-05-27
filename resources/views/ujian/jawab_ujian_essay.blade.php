@@ -1,4 +1,4 @@
-@extends('layouts_ujian.app')
+@extends('layouts_ujian.ujian')
 
 @section('content')
     <style>
@@ -30,12 +30,11 @@
             position: relative;
             border: 1px solid black;
         }
-
     </style>
     <div class="container">
         <div class="row mb-3">
             <div class="col-md-12">
-                <h4>{{ $soal->judul_soal }}</h4>
+                <h4><b>{{ $soal->judul_soal }}</b></h4>
             </div>
         </div>
         <div class="row">
@@ -45,10 +44,14 @@
                     <input type="hidden" name="id_soal" value="{{ $soal->id }}" />
                     <div class="card text-justify">
                         <div class="card-header">
-                            <p
-                                style="padding: 8px; border-style: solid; font-size: 12px; border-color: #3B3838; color: #ffff; border-radius: 8px; background-color: #3B3838">
-                                <b id="demo"></b>
-                            </p>
+                            <div class="float-right">
+                                <button class="btn btn-dark btn-sm">
+                                    <b id="demo"></b>
+                                </button>
+
+
+                                @include('ujian.modal_selesai_ujian')
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -79,8 +82,7 @@
                                                     @endif
                                                     <td>
                                                         <input type="hidden" name="id[]" value="{{ $row->id_jawab }}" />
-                                                        <textarea class="form-control form-control-sm" name="jawaban[]"
-                                                            id="jawaban" placeholder="...">{{ old('jawaban') }}</textarea>
+                                                        <textarea class="form-control form-control-sm" name="jawaban[]" id="jawaban" placeholder="...">{{ old('jawaban') }}</textarea>
                                                     </td>
                                                 </tr>
 
@@ -91,11 +93,6 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="card-footer text-muted">
-                            <div class="float-right">
-                                @include('ujian.modal_selesai_ujian')
                             </div>
                         </div>
                     </div>
@@ -109,38 +106,116 @@
         ?>
     </div>
     <script>
-        // Set the date we're counting down to
-        var tanggal_waktu = new Date("<?php
-                echo $tanggal_selesai; echo ' '; echo $waktu_selesai;
-                ?>
-                ").getTime();
+        function selesaiUjian(message) {
+            var jawaban = [];
+            var ids = [];
 
-                // Update the count down every 1 second
-                var x = setInterval(function() {
+            // Mengambil semua elemen input dengan nama "jawaban[]"
+            var inputs_jawaban = document.getElementsByName("jawaban[]");
+            var inputs_id = document.getElementsByName("id[]");
+            // Iterasi melalui elemen-elemen input dan menyimpan nilai ke dalam variabel jawaban dan ids
+            for (var i = 0; i < inputs_jawaban.length; i++) {
+                jawaban.push(inputs_jawaban[i].value);
+                ids.push(inputs_id[i].value);
+            }
 
-                    // Get todays date and time
-                    var now = new Date().getTime();
+            alert(message);
 
-                    // Find the distance between now and the count down date
-                    var distance = tanggal_waktu - now;
+            // Data yang akan dikirimkan
+            var data = new FormData();
+            data.append("id_soal", "{{ $soal->id }}"); // Contoh nilai id_soal, sesuaikan dengan nilai yang sesuai
+            data.append("jawaban", jawaban);
+            data.append("id", ids);
+            data.append("ket", message);
 
-                    // Time calculations for days, hours, minutes and seconds
-                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // Konfigurasi fetch request
+            var url = "{{ route('selesai_ujian_essay') }}";
+            var options = {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the request headers
+                },
+                body: data,
+            };
 
-                    // Output the result in an element with id="demo"
-                    document.getElementById("demo").innerHTML = days + "d " + hours + "h " +
-                        minutes + "m " + seconds + "s ";
+            // Kirim request menggunakan fetch
+            fetch(url, options)
+                .then(response => {
+                    if (response.ok) {
 
-                    // If the count down is over, write some text 
-                    if (distance < 0) {
-                        clearInterval(x);
-                        window.location.href = "{{ route('selesai_ujian', ['id_soal' => $id_soal]) }}";
-                        // document.getElementById('btnSignIn').click(); //kondisi tombol ditekan otomatis
+                        window.location.href =
+                            "{{ route('detail_nilai', ['id_soal' => $soal->id, 'id_user' => Crypt::encrypt(Auth::user()->id)]) }}";
+                    } else {
+                        throw new Error('Request failed.');
                     }
-                }, 1000);
+                })
+                .catch(error => {
+                    // Tangani error jika terjadi
+                    console.error('Terjadi kesalahan:', error);
+                });
 
+        }
+
+        // Set the date we're counting down to
+        var tanggal_waktu = new Date("{{ $tanggal_selesai . ' ' . $waktu_selesai }}").getTime();
+
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = tanggal_waktu - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            document.getElementById("demo").innerHTML = days + "d " + hours + "h " +
+                minutes + "m " + seconds + "s ";
+
+            // If the count down is over, write some text 
+            if (distance < 0) {
+                clearInterval(x);
+                selesaiUjian("Waktu ujian telah habis!");
+                // document.getElementById('btnSignIn').click(); //kondisi tombol ditekan otomatis
+            }
+        }, 1000);
+
+        // Menambahkan event listener untuk menangkap saat pengguna mencoba beralih tab
+        document.addEventListener('visibilitychange', function(event) {
+            if (document.visibilityState === 'hidden') {
+                // Menampilkan dialog peringatan
+                selesaiUjian('Anda terdeteksi mencoba beralih tab!');
+            }
+        });
+
+        window.addEventListener('resize', function(event) {
+            // Tampilkan pesan peringatan kepada pengguna
+            selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+        });
+
+        // Batasi fungsi pencarian
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                var forbiddenKeys = ['F', 'R',
+                    'U'
+                ]; // Daftar tombol keyboard yang ingin Anda larang (misalnya F untuk find, R untuk refresh, U untuk view source)
+                if (forbiddenKeys.indexOf(event.key.toUpperCase()) !== -1) {
+                    event.preventDefault();
+                    alert('Fitur ini dinonaktifkan selama ujian berlangsung.');
+                }
+            }
+        });
+
+        // Batasi salin dan tempel
+        var inputElements = document.querySelectorAll('input, textarea');
+        for (var i = 0; i < inputElements.length; i++) {
+            inputElements[i].setAttribute('onpaste', 'return false');
+        }
     </script>
 @endsection

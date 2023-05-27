@@ -2,6 +2,8 @@
 
 @section('content')
 
+    <!-- Tampilan HTML -->
+
     <!-- Begin Page Content -->
     <div class="container-fluid">
 
@@ -10,7 +12,7 @@
         $jadwal_sekarang = date('Y-m-d H:i:s');
         $jadwal_selesai_merge = $soal->tanggal_selesai . ' ' . $soal->waktu_selesai;
         $jadwal_selesai = date('Y-m-d H:i:s', strtotime($jadwal_selesai_merge));
-
+        
         $jadwal_mulai_merge = $soal->tanggal_mulai . ' ' . $soal->waktu_mulai;
         $jadwal_mulai = date('Y-m-d H:i:s', strtotime($jadwal_mulai_merge));
         ?>
@@ -28,7 +30,7 @@
 
             @if ($soal->id_user == $user->id)
                 <div class="col-md-12">
-                    <div class="card shadow col-md-12 mb-4">
+                    <div class="card shadow  mb-4">
                         <div class="card-header">
                             <div class="float-left">
                                 Pertanyaan
@@ -78,7 +80,8 @@
                                             <td><?php echo $tanya->pertanyaan; ?></td>
                                             <td>{{ $tanya->jawaban }}</td>
                                             <td>
-                                                <?php if ($jadwal_sekarang > $jadwal_mulai) { ?> <a class="btn btn-primary btn-sm disabled" href="#">
+                                                <?php if ($jadwal_sekarang > $jadwal_mulai) { ?> <a class="btn btn-primary btn-sm disabled"
+                                                    href="#">
                                                     <i class="fa fa-pencil-alt"></i>
                                                     Edit
                                                 </a>
@@ -106,8 +109,9 @@
                 <div class="card">
                     @if ($soal->materi_video != null)
                         <div class="embed-responsive embed-responsive-1by1 card-img-top">
-                            <iframe width="420" height="315" src="https://www.youtube.com/embed/{{ $soal->materi_video }}"
-                                frameborder="0" allowfullscreen></iframe>
+                            <iframe width="420" height="315"
+                                src="https://www.youtube.com/embed/{{ $soal->materi_video }}" frameborder="0"
+                                allowfullscreen></iframe>
                         </div>
                     @else
                         <img class="card-img-top" src="{{ asset('assets/images/novideodefault.PNG') }}"
@@ -120,7 +124,7 @@
             </div>
 
             <div class="col-md-9">
-                <div class="card shadow col-md-12 mb-3">
+                <div class="card shadow  mb-3">
                     <div class="card-header">
                         <div class="float-left">
                             Detail Informasi
@@ -139,40 +143,44 @@
                                     <i class="fa fa-pencil-alt"></i>
                                     Edit
                                 </a>
+
+                                <button onclick="shareToWhatsApp()" class="btn btn-success btn-sm"><i
+                                        class="fas fa-share"></i> Bagikan</button>
                             @else
                                 @if ($cek_daftar == 0)
                                     <?php if ($jadwal_sekarang <= $jadwal_selesai) { ?>
-                                        @include('ujian.modal_daftar_ujian') <a href="#"
-                                        class="btn btn-primary btn-sm disabled"><i class="fa fa-trophy"></i> Nilai</a><?php } else { ?> <a href="#"
-                                            class="btn btn-primary btn-sm disabled"><i class="fa fa-edit"></i>
-                                            Daftar</a>
-                                        <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-trophy"></i>
-                                            Nilai</a>
-                                        <?php } ?>
-                                    @elseif ($cek_daftar==1)
-                                        <?php if ($jadwal_sekarang <= $jadwal_selesai) { ?>
-                                            <a href="{{ route('tunggu_ujian', ['slug_soal' => $soal->slug_soal]) }}"
-                                            class="btn btn-primary btn-sm"><i class="fa fa-edit"></i>
-                                            Masuk
-                                            Ujian</a>
-                                            <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-trophy"></i>
-                                                Nilai</a> <?php } else { ?>
-                                            <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-edit"></i>
-                                                Masuk Ujian</a>
-                                            <a class="btn btn-primary btn-sm"
-                                                href="{{ route('selesai_ujian', ['id_soal' => $soal->id]) }}">
-                                                <i class="fa fa-trophy"></i>
-                                                Nilai
-                                            </a>
-                                            <?php } ?>
-                                        @elseif($cek_daftar==2 || $jadwal_sekarang <= $jadwal_selesai) <a href="#"
-                                                class="btn btn-primary btn-sm disabled"><i class="fa fa-edit"></i>
-                                                Masuk Ujian</a>
-                                                <a class="btn btn-primary btn-sm"
-                                                    href="{{ route('detail_nilai', ['id_soal' => $soal->id, 'id_user' => Crypt::encrypt($user->id)]) }}">
-                                                    <i class="fa fa-trophy"></i>
-                                                    Nilai
-                                                </a>
+                                    @include('ujian.modal_daftar_ujian')
+                                    <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-trophy"></i>
+                                        Nilai</a><?php } else { ?> <a href="#"
+                                        class="btn btn-primary btn-sm disabled"><i class="fa fa-edit"></i>
+                                        Daftar</a>
+                                    <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-trophy"></i>
+                                        Nilai</a>
+                                    <?php } ?>
+                                @elseif ($cek_daftar == 1)
+                                    <?php if ($jadwal_sekarang <= $jadwal_selesai) { ?>
+                                    <button type="button" class="btn btn-primary btn-sm masukUjianBtn"><i
+                                            class="fa fa-edit"></i> Masuk Ujian
+                                    </button>
+
+                                    <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-trophy"></i>
+                                        Nilai</a> <?php } else { ?>
+                                    <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-edit"></i>
+                                        Masuk Ujian</a>
+                                    <a class="btn btn-primary btn-sm"
+                                        href="{{ route('selesai_ujian', ['id_soal' => $soal->id]) }}">
+                                        <i class="fa fa-trophy"></i>
+                                        Nilai
+                                    </a>
+                                    <?php } ?>
+                                @elseif($cek_daftar == 2 || $jadwal_sekarang <= $jadwal_selesai)
+                                    <a href="#" class="btn btn-primary btn-sm disabled"><i class="fa fa-edit"></i>
+                                        Masuk Ujian</a>
+                                    <a class="btn btn-primary btn-sm"
+                                        href="{{ route('detail_nilai', ['id_soal' => $soal->id, 'id_user' => Crypt::encrypt($user->id)]) }}">
+                                        <i class="fa fa-trophy"></i>
+                                        Nilai
+                                    </a>
                                 @endif
                             @endif
                         </div>
@@ -205,6 +213,11 @@
                                         <td><b>{{ $soal->judul_soal }}</b></td>
                                     </tr>
                                     <tr>
+                                        <td width="5%"><i class="fa fa-star"></i></td>
+                                        <td>Kategori</td>
+                                        <td><b>{{ $soal->nama_jenis_soal }}</b></td>
+                                    </tr>
+                                    <tr>
                                         <td width="5%"><i class="fa fa-file-alt"></i></td>
                                         <td>Jenis Soal</td>
                                         <td><i><?php echo ucwords($soal->jenis_soal); ?></i>
@@ -216,11 +229,9 @@
                                             <td>Status Ujian</td>
                                             <td>
                                                 @if ($soal->status_soal == 'publish')
-                                                    <b style="color: green;"><?php echo
-                                                        ucwords($soal->status_soal); ?></b>
-                                                @else
-                                                    <b style="color: red;"><?php echo
-                                                        ucwords($soal->status_soal); ?></b>
+                                                    <span class="badge badge-success"><?php echo ucwords($soal->status_soal); ?></b>
+                                                    @else
+                                                        <span class="badge badge-danger"><?php echo ucwords($soal->status_soal); ?></b>
                                                 @endif
                                             </td>
                                         </tr>
@@ -229,11 +240,9 @@
                                             <td>Status Nilai</td>
                                             <td>
                                                 @if ($soal->status_nilai == 'publish')
-                                                    <b style="color: green;"><?php echo
-                                                        ucwords($soal->status_nilai); ?></b>
-                                                @else
-                                                    <b style="color: red;"><?php echo
-                                                        ucwords($soal->status_nilai); ?></b>
+                                                    <span class="badge badge-success"><?php echo ucwords($soal->status_nilai); ?></b>
+                                                    @else
+                                                        <span class="badge badge-danger"><?php echo ucwords($soal->status_nilai); ?></b>
                                                 @endif
                                             </td>
                                         </tr>
@@ -250,10 +259,7 @@
                                             @if ($soal->tanggal_mulai == null || $soal->waktu_mulai == null)
                                                 -
                                             @else
-                                                <?php echo date('d-m-Y', strtotime($soal->tanggal_mulai)) .
-                                                '
-                                                ' .
-                                                $soal->waktu_mulai; ?>
+                                                <?php echo date('d-m-Y', strtotime($soal->tanggal_mulai)) . ' ' . $soal->waktu_mulai; ?>
                                             @endif
                                         </td>
                                     </tr>
@@ -264,18 +270,17 @@
                                             @if ($soal->tanggal_selesai == null || $soal->waktu_selesai == null)
                                                 -
                                             @else
-                                                <?php echo date('d-m-Y', strtotime($soal->tanggal_selesai)) .
-                                                ' ' . $soal->waktu_selesai; ?>
+                                                <?php echo date('d-m-Y', strtotime($soal->tanggal_selesai)) . ' ' . $soal->waktu_selesai; ?>
                                             @endif
                                         </td>
                                     </tr>
                                     @if ($soal->id_user == $user->id)
-                                    <tr>
-                                        <td width="5%"><i class="fa fa-key"></i></td>
-                                        <td>Kode Ujian
-                                        </td>
-                                        <td><b>{{ $soal->pass_soal }}</b></td>
-                                    </tr>
+                                        <tr>
+                                            <td width="5%"><i class="fa fa-key"></i></td>
+                                            <td>Kode Ujian
+                                            </td>
+                                            <td><b>{{ $soal->pass_soal }}</b></td>
+                                        </tr>
                                     @endif
                                 </tbody>
                             </table>
@@ -290,4 +295,64 @@
     <!-- /.container-fluid -->
     </div>
     <!-- End of Main Content -->
+
+
+    <!-- Tampilan HTML -->
+
+    <div id="myModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog bd-example-modal-lg" role="document">
+            <div class="modal-content custom-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title text-warning"><i class="fas fa-exclamation-triangle"></i> <b>Peringatan</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-justify" style="padding: 20px 30px;">
+                    <p>Saat melaksanakan ujian, harap diperhatikan hal berikut:</p>
+                    <p><b class="text-danger">Tidak diperbolehkan berpindah halaman atau membuka tab baru</b> selama ujian
+                        berlangsung. Jika
+                        terjadi maka halaman ujian akan tertutup dan tidak dapat diakses kembali.</p>
+                    <p><b class="text-danger">Tidak diperbolehkan melakukan copy-paste</b> selama ujian berlangsung.</p>
+                    <p><b class="text-danger">Tidak diperbolehkan melakukan minimize pada halaman</b> ujian. Jika terjadi
+                        maka halaman ujian
+                        akan
+                        tertutup dan tidak dapat diakses kembali</p>
+                    <p><b class="text-danger">Segala bentuk kecurangan</b> akan dianggap pelanggaran serius.</p>
+                </div>
+                <div class="modal-footer">
+                    @if ($cek_daftar == 0)
+                    @else
+                        <a href="{{ route('tunggu_ujian', ['slug_soal' => $soal->slug_soal]) }}"
+                            class="btn btn-primary btn-block">Masuk Ujian</a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function shareToWhatsApp() {
+            var url = '{{ route('soal.show', $soal->slug_soal) }}';
+            var password = '{{ $soal->pass_soal }}';
+            var message = url + ' | Kode Ujian: ' + password;
+            var encodedMessage = encodeURIComponent(message);
+            var whatsappLink = 'whatsapp://send?text=' + encodedMessage;
+            window.location.href = whatsappLink;
+        }
+
+
+        function masukUjian() {
+            // Menampilkan modal
+            $('#myModal').modal('show');
+        }
+
+        $(document).ready(function() {
+            // Menambahkan event listener pada tombol "Masuk Ujian"
+            $('.masukUjianBtn').click(function() {
+                masukUjian();
+            });
+        });
+    </script>
 @endsection

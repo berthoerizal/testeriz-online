@@ -29,9 +29,10 @@ class UserController extends Controller
     {
         if ($request->password == $request->confirm_password) {
             $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'password' => 'required|min:8'
+                'name' => 'required|min:3|max:50|regex:/^[a-zA-Z ]+$/',
+                'email' => 'required|email|unique:users|ends_with:@gmail.com|ends_with:@yahoo.com|ends_with:@hotmail.com|ends_with:@outlook.com|ends_with:@live.com',
+                'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|confirmed',
+                'phone' => 'required|numeric|digits_between:10,13|starts_with:0|unique:users'
             ]);
 
             $users = User::all();
@@ -47,6 +48,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'id_role' => $request->id_role,
+                'phone' => $request->phone
             ]);
 
             if (!$user) {
@@ -66,14 +68,17 @@ class UserController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:users,email,' . $id,
-            'name' => 'required',
+            'name' => 'required|min:3|max:50|regex:/^[a-zA-Z ]+$/',
+            'phone' => 'required|numeric|digits_between:10,13|starts_with:0|unique:users,phone,' . $id,
         ]);
 
         $user = User::find($id);
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'id_role' => $request->id_role
+            'id_role' => $request->id_role,
+            'phone' => $request->phone,
+            'notactive' => $request->notactive,
         ]);
 
         if (!$user) {

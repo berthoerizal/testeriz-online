@@ -12,6 +12,7 @@ use App\jawab;
 use App\Nilai;
 use App\User;
 use Illuminate\Support\Facades\Crypt;
+use Exception;
 
 class NilaiController extends Controller
 {
@@ -32,17 +33,27 @@ class NilaiController extends Controller
 
         if ($soal->jenis_soal == "essay") {
             $nilais = DB::table('jawabs')
+                ->select('jawabs.id_soal', 'jawabs.id_user', 'users.name AS nama_peserta', 'users.email', 'jenis_soal.nama_jenis_soal', 'soals.judul_soal', 'daftars.status_daftar', DB::raw('SUM(jawabs.status_jawab) AS total_nilai'), DB::raw('SUM(jawabs.status_jawab) AS terjawab'))
                 ->leftJoin('users', 'jawabs.id_user', '=', 'users.id')
                 ->leftJoin('soals', 'jawabs.id_soal', '=', 'soals.id')
-                ->select('jawabs.*', 'users.name as nama_peserta', 'users.email', 'soals.judul_soal', DB::raw("(sum(status_jawab)) as total_nilai, sum(status_jawab) as terjawab"))
+                ->leftJoin('daftars', function ($join) {
+                    $join->on('jawabs.id_user', '=', 'daftars.id_user')
+                        ->on('soals.id', '=', 'daftars.id_soal');
+                })
+                ->leftJoin('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
                 ->where('jawabs.id_soal', $soal->id)
                 ->groupBy('jawabs.id_user')
                 ->get();
         } else {
             $nilais = DB::table('jawabs')
+                ->select('jawabs.id_soal', 'jawabs.id_user', 'users.name as nama_peserta', 'users.email', 'jenis_soal.nama_jenis_soal', 'soals.judul_soal', 'daftars.status_daftar', DB::raw("(SUM(jawabs.status_jawab) / $count_tanyas) * 100 as total_nilai"), DB::raw('SUM(jawabs.status_jawab) as terjawab'))
                 ->leftJoin('users', 'jawabs.id_user', '=', 'users.id')
                 ->leftJoin('soals', 'jawabs.id_soal', '=', 'soals.id')
-                ->select('jawabs.*', 'users.name as nama_peserta', 'users.email', 'soals.judul_soal', DB::raw("(sum(status_jawab)/$count_tanyas)*100 as total_nilai, sum(status_jawab) as terjawab"))
+                ->leftJoin('daftars', function ($join) {
+                    $join->on('jawabs.id_user', '=', 'daftars.id_user')
+                        ->on('soals.id', '=', 'daftars.id_soal');
+                })
+                ->leftJoin('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
                 ->where('jawabs.id_soal', $soal->id)
                 ->groupBy('jawabs.id_user')
                 ->get();
@@ -68,7 +79,8 @@ class NilaiController extends Controller
 
         $soal = DB::table('soals')
             ->join('users', 'soals.id_user', '=', 'users.id')
-            ->select('soals.*', 'users.name')
+            ->join('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
+            ->select('soals.*', 'users.name', 'jenis_soal.nama_jenis_soal')
             ->where('soals.id', $id_soal)
             ->first();
 
@@ -115,5 +127,42 @@ class NilaiController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function reset_nilai($id_soal, $flag, $id_user = null)
+    {
+        try {
+            $slug_soal = Soal::find($id_soal)->slug_soal;
+            if ($flag == "all") {
+                //update daftars
+                DB::table('daftars')
+                    ->where('id_soal', $id_soal)
+                    ->update(['status_daftar' => 1]);
+
+                //update jawabs
+                DB::table('jawabs')
+                    ->where('id_soal', $id_soal)
+                    ->update(['status_jawab' => 0, 'jawaban_user' => null]);
+            } else {
+                //update daftars
+                DB::table('daftars')
+                    ->where('id_soal', $id_soal)
+                    ->where('id_user', $id_user)
+                    ->update(['status_daftar' => 1]);
+
+                //update jawabs
+                DB::table('jawabs')
+                    ->where('id_soal', $id_soal)
+                    ->where('id_user', $id_user)
+                    ->update(['status_jawab' => 0, 'jawaban_user' => null]);
+            }
+
+            session()->flash('success', 'Data berhasil di-reset');
+            return redirect(route('nilai_peserta', ['id' => $slug_soal]));
+        } catch (Exception $e) {
+            session()->flash('error', 'Data gagal di-reset');
+            // redirect to nilai_peserta
+            return redirect(route('nilai_peserta', ['id' => $slug_soal]));
+        }
     }
 }

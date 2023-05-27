@@ -31,6 +31,6 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         View::share('konfigurasi', DB::table('konfigurasis')->first());
-        View::share('user_count', DB::table('users')->count());
+        View::share('user_count', DB::table('users')->where('notactive', 0)->count());
     }
 }

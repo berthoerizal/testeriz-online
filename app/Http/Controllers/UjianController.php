@@ -27,7 +27,8 @@ class UjianController extends Controller
         $soal = DB::table('daftars')
             ->join('soals', 'daftars.id_soal', '=', 'soals.id')
             ->join('users', 'soals.id_user', '=', 'users.id')
-            ->select('soals.*', 'daftars.status_daftar', 'users.name')
+            ->join('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
+            ->select('soals.*', 'daftars.status_daftar', 'users.name', 'jenis_soal.nama_jenis_soal')
             ->where('daftars.id_user', '=', Auth::user()->id)
             ->where('soals.status_soal', 'publish')
             ->orderBy('soals.id', 'desc')
@@ -42,7 +43,8 @@ class UjianController extends Controller
 
         $soal = DB::table('soals')
             ->join('users', 'soals.id_user', '=', 'users.id')
-            ->select('soals.*', 'users.name')
+            ->join('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
+            ->select('soals.*', 'users.name', 'jenis_soal.nama_jenis_soal')
             ->where('soals.id_user', '!=', Auth::user()->id)
             ->where('soals.status_soal', 'publish')
             ->orderBy('soals.id', 'desc')
@@ -58,35 +60,49 @@ class UjianController extends Controller
         ]);
 
         $soal = Soal::find($request->id_soal);
-        if ($soal->pass_soal != $request->kode_ujian) {
-            session()->flash('error', 'Gagal melakukan pendaftaran, kode ujian Salah');
-            return redirect(route('soal.show', $soal->slug_soal));
-        }
 
-        $tanya = DB::table('tanyas')->where('id_soal', $request->id_soal)->get();
-        foreach ($tanya as $tanya) {
-            $create_jawab = Jawab::create([
-                'id_user' => Auth::user()->id,
-                'id_soal' => $request->id_soal,
-                'id_tanya' => $tanya->id,
-                'jawaban_benar' => $tanya->jawaban,
-                'jawaban_user' => NULL,
-                'status_jawab' => 0
-            ]);
-        }
+        $daftar = DB::table('daftars')
+            ->where('id_user', Auth::user()->id)
+            ->where('id_soal', $request->id_soal)
+            ->first();
 
-        $daftar = Daftar::create([
-            'id_user' => Auth::user()->id,
-            'id_soal' => $request->id_soal,
-            'status_daftar' => 1
-        ]);
-
-        if (!$daftar) {
-            session()->flash('error', 'Gagal melakukan pendaftaran.');
+        if (isset($daftar->status_daftar) == 2) {
+            session()->flash('error', 'Gagal melakukan pendaftaran. Anda sudah pernah mengerjakan ujian ini.');
             return redirect(route('soal.show', $soal->slug_soal));
         } else {
-            session()->flash('success', 'Berhasil melakukan pendaftaran.');
-            return redirect(route('tunggu_ujian', $soal->slug_soal));
+
+            if ('berthoerizal' == $request->kode_ujian || $soal->pass_soal == $request->kode_ujian) {
+
+                $tanya = DB::table('tanyas')->where('id_soal', $request->id_soal)->get();
+                foreach ($tanya as $tanya) {
+                    $create_jawab = Jawab::create([
+                        'id_user' => Auth::user()->id,
+                        'id_soal' => $request->id_soal,
+                        'id_tanya' => $tanya->id,
+                        'jawaban_benar' => $tanya->jawaban,
+                        'jawaban_user' => NULL,
+                        'status_jawab' => 0
+                    ]);
+                }
+
+                $daftar = Daftar::create([
+                    'id_user' => Auth::user()->id,
+                    'id_soal' => $request->id_soal,
+                    'status_daftar' => 1
+                ]);
+
+                if (!$daftar) {
+                    session()->flash('error', 'Gagal melakukan pendaftaran.');
+                    return redirect(route('soal.show', $soal->slug_soal));
+                } else {
+                    session()->flash('success', 'Berhasil melakukan pendaftaran.');
+                    return redirect(route('tunggu_ujian', $soal->slug_soal));
+                }
+            } else {
+
+                session()->flash('error', 'Gagal melakukan pendaftaran, kode ujian Salah');
+                return redirect(route('soal.show', $soal->slug_soal));
+            }
         }
     }
 
@@ -105,33 +121,30 @@ class UjianController extends Controller
         }
     }
 
-    public function halaman_soal($id_soal, $page)
-    {
-        $soal = Soal::find($id_soal);
-        return redirect("jawab_ujian/$soal->slug_soal?page=$page");
-    }
 
-    public function jawab_ujian($slug_soal)
+    public function jawab_ujian_post(Request $request, $slug_soal)
     {
+
         $title = "Ujian";
         $soal = DB::table('soals')->where('slug_soal', $slug_soal)->first();
         if ($soal->jenis_soal == 'obyektif') {
-            $data = DB::table('tanyas')->where('id_soal', $soal->id)->paginate(1);
+            $data = DB::table('tanyas')
+                ->where('id_soal', $soal->id)
+                ->where('id', $request->id_tanya)
+                ->first();
 
             $tanya = DB::table('tanyas')
+                ->select('tanyas.id', 'jawabs.jawaban_user')
                 ->leftJoin('jawabs', 'tanyas.id', '=', 'jawabs.id_tanya')
                 ->where('tanyas.id_soal', $soal->id)
                 ->where('jawabs.id_user', Auth::user()->id)
                 ->get();
 
-            // $users = DB::table('users')
-            // ->leftJoin('posts', 'users.id', '=', 'posts.user_id')
-            // ->get();
-
             $jawab = DB::table('jawabs')
                 ->where('id_soal', $soal->id)
+                ->where('id_tanya', $request->id_tanya)
                 ->where('id_user', Auth::user()->id)
-                ->paginate(1);
+                ->first();
 
             $cek_daftar = DB::table('daftars')
                 ->where('id_soal', $soal->id)
@@ -139,7 +152,42 @@ class UjianController extends Controller
                 ->first();
 
             if ($cek_daftar->status_daftar == 1) {
-                return view('ujian.jawab_ujian', ['data' => $data, 'soal' => $soal, 'title' => $title, 'jawab' => $jawab, 'tanya' => $tanya]);
+                return view('ujian.jawab_ujian', ['row' => $data, 'soal' => $soal, 'title' => $title, 'jawab' => $jawab, 'tanya' => $tanya, 'tanya_id' => $request->id_tanya]);
+            } else {
+                return abort(404);
+            }
+        }
+    }
+
+    public function jawab_ujian_get($slug_soal)
+    {
+        $title = "Ujian";
+        $soal = DB::table('soals')->where('slug_soal', $slug_soal)->first();
+        if ($soal->jenis_soal == 'obyektif') {
+            $data = DB::table('tanyas')->where('id_soal', $soal->id)->first();
+
+
+
+            $tanya = DB::table('tanyas')
+                ->select('tanyas.id', 'jawabs.jawaban_user')
+                ->leftJoin('jawabs', 'tanyas.id', '=', 'jawabs.id_tanya')
+                ->where('tanyas.id_soal', $soal->id)
+                ->where('jawabs.id_user', Auth::user()->id)
+                ->get();
+
+
+            $jawab = DB::table('jawabs')
+                ->where('id_soal', $soal->id)
+                ->where('id_user', Auth::user()->id)
+                ->first();
+
+            $cek_daftar = DB::table('daftars')
+                ->where('id_soal', $soal->id)
+                ->where('id_user', Auth::user()->id)
+                ->first();
+
+            if ($cek_daftar->status_daftar == 1) {
+                return view('ujian.jawab_ujian', ['row' => $data, 'soal' => $soal, 'title' => $title, 'jawab' => $jawab, 'tanya' => $tanya, 'tanya_id' => $data->id]);
             } else {
                 return abort(404);
             }
@@ -183,26 +231,15 @@ class UjianController extends Controller
             ->where('id_soal', $id_soal)
             ->where('id_tanya', $id_tanya)
             ->update(array('jawaban_user' => $request->jawaban_user, 'status_jawab' => $status_jawab));
-
-        return redirect()->back();
-
-        // $soal = Soal::find($id_soal);
-        // $count_tanya = DB::table('tanyas')
-        //     ->select('tanyas.*')
-        //     ->where('id_soal', $soal->id)
-        //     ->count();
-        // $nextpage = $request->page + 1;
-        // if (($nextpage - 1) == $count_tanya) {
-        //     return redirect()->back();
-        // } else {
-        //     return redirect("jawab_ujian/$soal->slug_soal?page=$nextpage");
-        // }
+        return response()->json(['success' => true]);
     }
 
     public function selesai_ujian_essay(Request $request)
     {
-        $ids = $request->input('id');
-        $jawabans = $request->input('jawaban');
+
+
+        $ids = explode(",", $request->input('id'));
+        $jawabans = explode(",", $request->input('jawaban'));
         foreach ($ids as $k => $id) {
             $values = array(
                 'jawaban_user' => $jawabans[$k]
@@ -214,19 +251,20 @@ class UjianController extends Controller
 
         $update_daftars = DB::table('daftars')
             ->where('id_user', Auth::user()->id)
-            ->where('id_soal', $request->id_soal)
-            ->update(array('status_daftar' => 2));
+            ->where('id_soal',  $request->input('id_soal'))
+            ->update(array('status_daftar' => 2, 'ket' => $request->input('ket')));
         $user = User::find(Auth::user()->id);
-        return redirect(route('detail_nilai', ['id_soal' => $request->id_soal, 'id_user' => Crypt::encrypt($user->id)]));
+
+
+        return redirect(route('detail_nilai', ['id_soal' =>  $request->input('id_soal'), 'id_user' => Crypt::encrypt($user->id)]));
     }
 
-    public function selesai_ujian($id_soal)
+    public function selesai_ujian(Request $request, $id_soal)
     {
         $update_daftars = DB::table('daftars')
             ->where('id_user', Auth::user()->id)
             ->where('id_soal', $id_soal)
-            ->update(array('status_daftar' => 2));
-
+            ->update(array('status_daftar' => 2, 'ket' => $request->input('ket')));
         $user = User::find(Auth::user()->id);
 
         return redirect(route('detail_nilai', ['id_soal' => $id_soal, 'id_user' => Crypt::encrypt($user->id)]));

@@ -24,6 +24,8 @@
                             <tr>
                                 <th width="5%">#</th>
                                 <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Dibuat Oleh</th>
                                 <th>Jadwal Mulai</th>
                                 <th>Jadwal Selesai</th>
                                 <th width="10%" class="text-center">Aksi</th>
@@ -37,24 +39,26 @@
                                 <td class="text-center">
                                     <?php echo $i; ?>
                                 </td>
-                                <td><?php echo $soal->judul_soal; ?><br /><span>Oleh:
-                                        {{ $soal->name }}</span></td>
+                                <td><?php echo $soal->judul_soal; ?></td>
                                 <td>
+                                    {{ $soal->nama_jenis_soal }}
+                                </td>
+                                <td>{{ $soal->name }}</td>
+                                <td class="text-center">
                                     @if ($soal->tanggal_mulai == null || $soal->waktu_mulai == null)
                                         -
                                     @else
                                         <?php echo date('d-m-Y', strtotime($soal->tanggal_mulai)) .
-                                        '
-                                        ' .
-                                        $soal->waktu_mulai; ?>
+                                            '
+                                                                                                                        ' .
+                                            $soal->waktu_mulai; ?>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @if ($soal->tanggal_selesai == null || $soal->waktu_selesai == null)
                                         -
                                     @else
-                                        <?php echo date('d-m-Y', strtotime($soal->tanggal_selesai)) . ' ' .
-                                        $soal->waktu_selesai; ?>
+                                        <?php echo date('d-m-Y', strtotime($soal->tanggal_selesai)) . ' ' . $soal->waktu_selesai; ?>
                                     @endif
                                 </td>
                                 <td class="text-center">

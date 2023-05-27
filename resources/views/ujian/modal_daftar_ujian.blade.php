@@ -12,34 +12,48 @@
 <!-- Tambah Modal-->
 <div class="modal fade" id="daftarUjian" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
+    <div class="modal-dialog bd-example-modal-lg" role="document">
+        <div class="modal-content custom-modal">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Daftar Ujian</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                <h5 class="modal-title text-warning"><i class="fas fa-exclamation-triangle"></i> <b>Peringatan</b>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('daftar_ujian') }}" method="POST" enctype="multipart/form-data">
+            <form class="form-inline" action="{{ route('daftar_ujian') }}" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
-                <input type="hidden" name="id_soal" value="{{ $soal->id }}" />
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="kode_ujian">Kode Ujian</label>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon3"><i class="fa fa-key"></i></span>
-                            </div>
-                            <input type="password" name="kode_ujian" id="kode_ujian" value=""
-                                class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                <div class="modal-body text-justify" style="padding: 20px 30px;">
+                    <p>Saat melaksanakan ujian, harap diperhatikan hal berikut:</p>
+                    <p><b class="text-danger">Tidak diperbolehkan berpindah halaman atau membuka tab baru</b> selama
+                        ujian
+                        berlangsung. Jika
+                        terjadi maka halaman ujian akan tertutup dan tidak dapat diakses kembali.</p>
+                    <p><b class="text-danger">Tidak diperbolehkan melakukan copy-paste</b> selama ujian berlangsung.</p>
+                    <p><b class="text-danger">Tidak diperbolehkan melakukan minimize pada halaman</b> ujian. Jika
+                        terjadi
+                        maka halaman ujian
+                        akan
+                        tertutup dan tidak dapat diakses kembali</p>
+                    <p><b class="text-danger">Segala bentuk kecurangan</b> akan dianggap pelanggaran serius.</p>
+
+
+
+
+                    <input type="hidden" name="id_soal" value="{{ $soal->id }}" />
+
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Kode Ujian" aria-label="Kode Ujian"
+                            aria-describedby="basic-addon2" name="kode_ujian">
+                        <div class="input-group-append">
+                            <button type="submit" class="input-group-text btn btn-primary">Masuk</button>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm">Masuk</button>
-                </div>
+
             </form>
+
         </div>
     </div>
 </div>

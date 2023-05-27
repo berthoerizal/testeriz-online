@@ -17,8 +17,10 @@
     <script>
         // Set the date we're counting down to
         var tanggal_waktu = new Date("<?php
-                echo $tanggal_mulai; echo ' '; echo $waktu_mulai;
-                ?>
+        echo $tanggal_mulai;
+        echo ' ';
+        echo $waktu_mulai;
+        ?>
                 ").getTime();
 
                 // Update the count down every 1 second
@@ -48,6 +50,5 @@
                         // document.getElementById('btnSignIn').click(); //kondisi tombol ditekan otomatis
                     }
                 }, 1000);
-
     </script>
 @endsection

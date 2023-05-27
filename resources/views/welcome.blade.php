@@ -36,12 +36,6 @@
                                         Ujian Online
                                     </h2>
                                     <p>{{ $konfigurasi->desc1 }}</p>
-                                    <a href="{{ route('soal.index') }}" class="btn btn-outline-info">
-                                        Buat Soal
-                                    </a>
-                                    <a href="{{ route('ujian.index') }}" class="btn btn-outline-info">
-                                        Ikuti Ujian
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -65,12 +59,6 @@
                                         Ujian Online
                                     </h2>
                                     <p>{{ $konfigurasi->desc1 }}</p>
-                                    <a href="{{ route('soal.index') }}" class="btn btn-outline-info">
-                                        Buat Soal
-                                    </a>
-                                    <a href="{{ route('ujian.index') }}" class="btn btn-outline-info">
-                                        Ikuti Ujian
-                                    </a>
                                 </div>
                             </div>
                         </div>

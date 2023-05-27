@@ -16,6 +16,12 @@
                 <div class="float-left">
                     Nilai Peserta Ujian
                 </div>
+                <div class="float-right">
+                    <a class="btn btn-danger btn-sm"
+                        href="{{ route('reset_nilai', ['id_soal' => $soal->id, 'flag' => 'all']) }}"
+                        onclick="return confirm('Apakah anda yakin ingin melakukan reset data pada semua peserta ?')"><i
+                            class="fas fa-edit"></i> Reset Semua Peserta</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -25,8 +31,9 @@
                                 <th width="5%">#</th>
                                 <th>Nama Peserta</th>
                                 <th>Email</th>
+                                <th>Status</th>
                                 <th>Nilai</th>
-                                <th width="20%" class="text-center">Aksi</th>
+                                <th width="30%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,9 +44,12 @@
                                 <td class="text-center">
                                     <?php echo $i; ?>
                                 </td>
-                                <td><?php echo $nilai->nama_peserta; ?></td>
+                                <td><b><?php echo $nilai->nama_peserta; ?></b></td>
                                 <td><?php echo $nilai->email; ?></td>
-                                </td>
+                                <td class="text-center"><?php if($nilai->status_daftar==1) { ?>
+                                    <span class="badge badge-info">Sudah Daftar</span> <?php } else { ?>
+                                    <span class="badge badge-success">Sudah Selesai</span>
+                                    <?php } ?>
                                 </td>
                                 <td class="text-right"><?php echo number_format($nilai->total_nilai); ?></td>
                                 <td class="text-center">
@@ -47,6 +57,12 @@
                                         href="{{ route('detail_nilai', ['id_soal' => $nilai->id_soal, 'id_user' => Crypt::encrypt($nilai->id_user)]) }}">
                                         <i class="fa fa-book"></i>
                                         Info
+                                    </a>
+                                    <a href="{{ route('profile.show', Crypt::encrypt($nilai->id_user)) }}" target="_blank"
+                                        class="btn btn-sm btn-primary"><i class="fas fa-user"></i> Profile</a>
+                                    <a onclick="return confirm('Apakah anda yakin ingin melakukan reset data pada pengguna atas nama {{ $nilai->nama_peserta }} ?')"
+                                        href="{{ route('reset_nilai', ['id_soal' => $nilai->id_soal, 'flag' => 'user', 'id_user' => $nilai->id_user]) }}"
+                                        class="btn btn-danger btn-sm"><i class="fas fa-edit"></i> Reset
                                     </a>
                                 </td>
                             </tr>

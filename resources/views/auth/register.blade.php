@@ -109,7 +109,6 @@
                 line-height: 70px;
             }
         }
-
     </style>
 </head>
 
@@ -138,12 +137,19 @@
             @enderror
 
             <div class="form-group">
-                <input class="form-control item" id="name" type="text" name="name" value="{{ old('name') }}"
-                    class="@error('name') is-invalid @enderror" placeholder="Nama Lengkap" autofocus>
+                <input class="form-control item" id="name" type="text" name="name"
+                    value="{{ old('name') }}" class="@error('name') is-invalid @enderror" placeholder="Nama Lengkap"
+                    autofocus>
             </div>
             <div class="form-group">
-                <input class="form-control item" id="email" type="text" class="@error('email') is-invalid @enderror"
-                    name="email" value="{{ old('email') }}" placeholder="Email">
+                <input class="form-control item" id="email" type="text"
+                    class="@error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
+                    placeholder="Email">
+            </div>
+            <div class="form-group">
+                <input class="form-control item" id="phone" type="text"
+                    class="@error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}"
+                    placeholder="Nomor Hp">
             </div>
             <div class="form-group">
                 <input type="password" class="form-control item" id="password"
@@ -172,7 +178,6 @@
             $('#birth-date').mask('00/00/0000');
             $('#phone-number').mask('0000-0000');
         })
-
     </script>
 </body>
 

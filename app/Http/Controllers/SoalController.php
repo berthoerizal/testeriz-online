@@ -10,6 +10,7 @@ use App\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\JenisSoal;
 
 class SoalController extends Controller
 {
@@ -21,34 +22,37 @@ class SoalController extends Controller
     public function index()
     {
         $title = "Buat Soal";
+
         $soal = DB::table('soals')
+            ->select('soals.*', 'users.name', 'jenis_soal.nama_jenis_soal')
+            ->selectRaw('(SELECT COUNT(*) FROM daftars WHERE daftars.id_soal = soals.id) AS jumlah_peserta')
+            ->leftJoin('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
             ->join('users', 'soals.id_user', '=', 'users.id')
-            ->select('soals.*', 'users.name')
-            ->orderBy('soals.id', 'desc')
             ->where('soals.id_user', Auth::user()->id)
+            ->orderBy('soals.id', 'desc')
             ->get();
+
         return view('soal.index', ['title' => $title, 'soal' => $soal]);
     }
 
     public function create()
     {
+        $jenis_soal = DB::table('jenis_soal')->get();
         $title = "Tambah Soal";
-        return view('soal.create', ['title' => $title]);
+        return view('soal.create', ['title' => $title, 'jenis_soal' => $jenis_soal]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'judul_soal' => 'required'
+            'judul_soal' => 'required',
+            'pass_soal' => 'required'
         ]);
 
-        $soal = Soal::all();
-        foreach ($soal as $soal) {
-            if ($soal->judul_soal == $request->judul_soal) {
-                session()->flash('error', 'Data gagal ditambah, Judul soal tidak boleh sama.');
-                return redirect(route('soal.create'));
-            }
-        }
+        $jenis_soal = DB::table('jenis_soal')->where('id', $request->id_jenis_soal)->first();
+        $nama_jenis_soal = substr($jenis_soal->nama_jenis_soal, 0, 3);
+        $lastSlug = DB::table('soals')->max(DB::raw('CAST(RIGHT(slug_soal, 5) AS UNSIGNED)'));
+        $newSlug = strtoupper($nama_jenis_soal . str_pad(($lastSlug + 1), 5, '0', STR_PAD_LEFT));
 
         if ($request->hasFile('materi_file')) {
             $resorce  = $request->file('materi_file');
@@ -59,8 +63,9 @@ class SoalController extends Controller
             $soal = Soal::create([
                 'id_user' => Auth::user()->id,
                 'judul_soal' => $request->judul_soal,
-                'slug_soal' => Str::slug($request->judul_soal),
-                'pass_soal' => Str::random(8),
+                'slug_soal' => $newSlug,
+                //'pass_soal' => Str::random(8),
+                'pass_soal' => $request->pass_soal,
                 'jenis_soal' => $request->jenis_soal,
                 'status_soal' => $request->status_soal,
                 'status_nilai' => $request->status_nilai,
@@ -70,15 +75,17 @@ class SoalController extends Controller
                 'waktu_mulai' => $request->waktu_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
                 'waktu_selesai' => $request->waktu_selesai,
-                'status_nilai' => 'draft'
+                'status_nilai' => 'draft',
+                'id_jenis_soal' => $request->id_jenis_soal,
             ]);
         } else {
             $materi_file = NULL;
             $soal = Soal::create([
                 'id_user' => Auth::user()->id,
                 'judul_soal' => $request->judul_soal,
-                'slug_soal' => Str::slug($request->judul_soal),
-                'pass_soal' => Str::random(8),
+                'slug_soal' => $newSlug,
+                //'pass_soal' => Str::random(8),
+                'pass_soal' => $request->pass_soal,
                 'jenis_soal' => $request->jenis_soal,
                 'status_soal' => $request->status_soal,
                 'status_nilai' => $request->status_nilai,
@@ -88,7 +95,8 @@ class SoalController extends Controller
                 'waktu_mulai' => $request->waktu_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
                 'waktu_selesai' => $request->waktu_selesai,
-                'status_nilai' => 'draft'
+                'status_nilai' => 'draft',
+                'id_jenis_soal' => $request->id_jenis_soal,
             ]);
         }
 
@@ -108,7 +116,8 @@ class SoalController extends Controller
         $title = "Info Soal";
         $soal = DB::table('soals')
             ->join('users', 'soals.id_user', '=', 'users.id')
-            ->select('soals.*', 'users.name')
+            ->leftJoin("jenis_soal", "soals.id_jenis_soal", "=", "jenis_soal.id")
+            ->select('soals.*', 'users.name', 'jenis_soal.nama_jenis_soal')
             ->where('soals.slug_soal', $slug_soal)
             ->first();
 
@@ -144,8 +153,9 @@ class SoalController extends Controller
         $id = Crypt::decrypt($id);
         $title = "Edit Soal";
         $soal = Soal::find($id);
+        $jenis_soal = JenisSoal::all();
         if ($soal->id_user == Auth::user()->id) {
-            return view('soal.edit', ['title' => $title, 'soal' => $soal]);
+            return view('soal.edit', ['title' => $title, 'soal' => $soal, 'jenis_soal' => $jenis_soal]);
         } else {
             return abort(404);
         }
@@ -154,7 +164,7 @@ class SoalController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'judul_soal' => 'required|unique:soals,judul_soal,' . $id
+            'pass_soal' => 'required'
         ]);
 
         if ($request->hasFile('materi_file')) {
@@ -170,7 +180,6 @@ class SoalController extends Controller
             $soal->update([
                 'id_user' => Auth::user()->id,
                 'judul_soal' => $request->judul_soal,
-                'slug_soal' => Str::slug($request->judul_soal),
                 'status_soal' => $request->status_soal,
                 'status_nilai' => $request->status_nilai,
                 'materi_file' => $materi_file,
@@ -178,7 +187,9 @@ class SoalController extends Controller
                 'tanggal_mulai' => $request->tanggal_mulai,
                 'waktu_mulai' => $request->waktu_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
-                'waktu_selesai' => $request->waktu_selesai
+                'waktu_selesai' => $request->waktu_selesai,
+                'pass_soal' => $request->pass_soal,
+                'id_jenis_soal' => $request->id_jenis_soal,
             ]);
 
             if (!$soal) {
@@ -193,14 +204,15 @@ class SoalController extends Controller
             $soal->update([
                 'id_user' => Auth::user()->id,
                 'judul_soal' => $request->judul_soal,
-                'slug_soal' => Str::slug($request->judul_soal),
                 'status_soal' => $request->status_soal,
                 'status_nilai' => $request->status_nilai,
                 'materi_video' => $request->materi_video,
                 'tanggal_mulai' => $request->tanggal_mulai,
                 'waktu_mulai' => $request->waktu_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
-                'waktu_selesai' => $request->waktu_selesai
+                'waktu_selesai' => $request->waktu_selesai,
+                'pass_soal' => $request->pass_soal,
+                'id_jenis_soal' => $request->id_jenis_soal,
             ]);
 
             if (!$soal) {

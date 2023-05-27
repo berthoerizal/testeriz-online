@@ -27,8 +27,12 @@
                     <div class="form-group">
                         <label for="id_role">Akses Level</label>
                         <select class="form-control form-control-sm" id="id_role" name="id_role">
-                            <option value="1" @if ($user->id_role == '1') selected @endif>Anggota</option>
-                            <option value="21" @if ($user->id_role == '21') selected @endif>Administrator</option>
+                            <option value="0" @if ($user->id_role == null || $user->id_rol == 0) selected @endif>Jawab Ujian
+                            </option>
+                            <option value="1" @if ($user->id_role == 1) selected @endif>Buat Soal
+                            </option>
+                            <option value="21" @if ($user->id_role == '21') selected @endif>Administrator
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -40,6 +44,19 @@
                         <label for="email">Email</label>
                         <input type="email" class="form-control form-control-sm" name="email" id="email"
                             placeholder="Email" value="{{ $user->email }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control form-control-sm" name="phone" id="phone"
+                            placeholder="Nomor Hp" value="{{ $user->phone }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="notactive">Status</label>
+                        <select class="form-control form-control-sm" id="notactive" name="notactive">
+                            <option value="0" @if ($user->notactive == 0) selected @endif>Aktif</option>
+                            <option value="1" @if ($user->notactive == 1) selected @endif>Tidak Aktif
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

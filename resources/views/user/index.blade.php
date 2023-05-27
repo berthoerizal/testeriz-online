@@ -34,7 +34,9 @@
                                 <th class="text-center">#</th>
                                 <th class="text-center">Nama</th>
                                 <th class="text-center">Email</th>
+                                <th class="text-center">Phone</th>
                                 <th class="text-center">Hak Akses</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center" width="30%">Aksi</th>
                             </tr>
                         </thead>
@@ -46,17 +48,30 @@
                                 <td><?php echo $i; ?></td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>
-                                    @if ($user->id_role == 21)
-                                        Administrator
+                                <td class="text-center">{{ $user->phone }}</td>
+                                <td class="text-center">
+                                    @if ($user->id_role == 0)
+                                        <span class="badge badge-primary">Jawab Ujian</span>
+                                    @elseif ($user->id_role == 1)
+                                        <span class="badge badge-success">Buat Soal</span>
+                                    @elseif ($user->id_role == 21)
+                                        <span class="badge badge-warning">Administrator</span>
                                     @else
-                                        Anggota
+                                        <span class="badge badge-danger">Belum Terdaftar</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
+                                    @if ($user->notactive == 1)
+                                        <span class="badge badge-danger">Tidak Aktif</span>
+                                    @else
+                                        <span class="badge badge-success">Aktif</span>
+                                    @endif
+                                </td>
+                                <td><a href="{{ route('profile.show', Crypt::encrypt($user->id)) }}" target="_blank"
+                                        class="btn btn-sm btn-primary"><i class="fas fa-user"></i> Profile</a>
                                     @include('user.edit')
                                     @include('user.reset_password')
-                                    @include('user.delete')
+                                    {{-- @include('user.delete') --}}
                                 </td>
                             </tr>
                             <?php $i++;}

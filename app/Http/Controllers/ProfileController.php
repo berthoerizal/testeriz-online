@@ -18,14 +18,26 @@ class ProfileController extends Controller
 
     public function show($id)
     {
+
         $id = Crypt::decrypt($id);
-        if (Auth::user()->id == $id) {
-            $user = User::find($id);
-            $title = $user->name;
-            return view('profile.show', ['title' => $title, 'user' => $user]);
+        $soal_count = DB::table('soals')->where('id_user', $id)->count();
+        $ujian_count = DB::table('daftars')->where('id_user', $id)->count();
+
+        $user = User::find($id);
+        if ($user->id_role == 0) {
+
+            $ujian = DB::table('daftars')
+                ->select('daftars.*', 'soals.judul_soal', 'jenis_soal.nama_jenis_soal')
+                ->leftJoin('soals', 'daftars.id_soal', '=', 'soals.id')
+                ->leftJoin('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
+                ->where('daftars.id_user', $id)->get();
         } else {
-            abort(404);
+            $ujian = DB::table('soals')
+                ->leftJoin('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
+                ->where('soals.id_user', $id)->get();
         }
+        $title = $user->name;
+        return view('profile.show', ['title' => $title, 'user' => $user, 'soal_count' => $soal_count, 'ujian_count' => $ujian_count, 'ujian' => $ujian]);
     }
 
     public function update(Request $request, $id)
@@ -34,6 +46,7 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $id,
             'name' => 'required',
             'gambar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'phone' => 'required|numeric|digits_between:10,13|unique:users,phone,' . $id,
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -50,6 +63,7 @@ class ProfileController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'gambar' => $gambar,
+                'phone' => $request->phone,
             ]);
 
             $id = Crypt::encrypt(Auth::user()->id);
@@ -65,6 +79,7 @@ class ProfileController extends Controller
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
+                'phone' => $request->phone
             ]);
 
             $id = Crypt::encrypt(Auth::user()->id);

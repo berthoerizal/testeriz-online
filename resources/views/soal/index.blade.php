@@ -25,10 +25,11 @@
                             <tr>
                                 <th width="5%">#</th>
                                 <th>Judul</th>
-                                <th>Status Ujian</th>
-                                <th>Status Nilai</th>
+                                <th>Status</th>
+                                <th>Kategori Soal</th>
                                 <th>Jadwal Mulai</th>
                                 <th>Jadwal Selesai</th>
+                                <th>Peserta</th>
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -40,40 +41,38 @@
                                 <td class="text-center">
                                     <?php echo $i; ?>
                                 </td>
-                                <td><?php echo $soal->judul_soal; ?><br /><span>Oleh:
-                                        {{ $soal->name }}</span></td>
-                                <td>
+                                <td><?php echo $soal->judul_soal; ?></td>
+                                <td class="text-center">
                                     @if ($soal->status_soal == 'publish')
-                                        <b style="color: green;"><?php echo ucwords($soal->status_soal); ?></b>
+                                        <span class="badge badge-success">Ujian <?php echo ucwords($soal->status_soal); ?></span>
                                     @else
-                                        <b style="color: red;"><?php echo ucwords($soal->status_soal); ?></b>
+                                        <span class="badge badge-danger">Ujian <?php echo ucwords($soal->status_soal); ?></span>
                                     @endif
-                                </td>
-                                <td>
                                     @if ($soal->status_nilai == 'publish')
-                                        <b style="color: green;"><?php echo ucwords($soal->status_nilai); ?></b>
+                                        <span class="badge badge-success">Nilai <?php echo ucwords($soal->status_nilai); ?></span>
                                     @else
-                                        <b style="color: red;"><?php echo ucwords($soal->status_nilai); ?></b>
+                                        <span class="badge badge-danger">Nilai <?php echo ucwords($soal->status_nilai); ?></span>
                                     @endif
                                 </td>
-                                <td>
+                                <td>{{ $soal->nama_jenis_soal }}</td>
+                                <td class="text-center">
                                     @if ($soal->tanggal_mulai == null || $soal->waktu_mulai == null)
                                         -
                                     @else
                                         <?php echo date('d-m-Y', strtotime($soal->tanggal_mulai)) .
-                                        '
-                                        ' .
-                                        $soal->waktu_mulai; ?>
+                                            '
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ' .
+                                            $soal->waktu_mulai; ?>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @if ($soal->tanggal_selesai == null || $soal->waktu_selesai == null)
                                         -
                                     @else
-                                        <?php echo date('d-m-Y', strtotime($soal->tanggal_selesai)) . ' ' .
-                                        $soal->waktu_selesai; ?>
+                                        <?php echo date('d-m-Y', strtotime($soal->tanggal_selesai)) . ' ' . $soal->waktu_selesai; ?>
                                     @endif
                                 </td>
+                                <td class="text-right">{{ $soal->jumlah_peserta }}</td>
                                 <td class="text-center">
                                     <a class="btn btn-primary btn-sm" href="{{ route('soal.show', $soal->slug_soal) }}">
                                         <i class="fa fa-book"></i>

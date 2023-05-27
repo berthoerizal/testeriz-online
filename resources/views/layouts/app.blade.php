@@ -33,6 +33,15 @@
 
 
     <link rel="stylesheet" href="{{ asset('assets/css/style_admin.css') }}">
+    <style>
+        td {
+            font-size: 14px;
+        }
+
+        th {
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -44,8 +53,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center"
-                href="{{ route('home.index') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home.index') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -55,20 +63,20 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('home.index') }}">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span></a>
+            </li>
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
-
             <!-- Divider -->
-            <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Layanan
-            </div>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('profile.show', Crypt::encrypt(Auth::user()->id)) }}">
@@ -82,27 +90,36 @@
                         <i class="fa fa-users"></i>
                         <span>Pengguna</span></a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('jenis_soal.index') }}">
+                        <i class="fas fa-book"></i>
+                        <span>Jenis Soal</span></a>
+                </li>
             @endif
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('soal.index') }}">
-                    <i class="fa fa-question"></i>
-                    <span>Buat Soal</span></a>
-            </li>
+            @if (Auth::user()->id_role == 1)
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('soal.index') }}">
+                        <i class="fa fa-question"></i>
+                        <span>Buat Soal</span></a>
+                </li>
+            @endif
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fa fa-check"></i>
-                    <span>Ikuti Ujian</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('ujian_sudah_daftar') }}">Sudah Daftar</a>
-                        <a class="collapse-item" href="{{ route('ujian.index') }}">Semua Ujian</a>
+            @if (Auth::user()->id_role == 0 || Auth::user()->id_role == null)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                        aria-expanded="true" aria-controls="collapseTwo">
+                        <i class="fa fa-check"></i>
+                        <span>Ikuti Ujian</span>
+                    </a>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{{ route('ujian_sudah_daftar') }}">Sudah Daftar</a>
+                            <a class="collapse-item" href="{{ route('ujian.index') }}">Semua Ujian</a>
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            @endif
 
             @if (Auth::user()->id_role == 21)
                 <li class="nav-item">
@@ -113,7 +130,8 @@
             @endif
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
+                <a class="nav-link" href="{{ route('logout') }}"
+                    onclick="event.preventDefault();
         document.getElementById('logout-form').submit();">
                     <i class="fa fa-sign-out-alt"></i>
                     <span>{{ __('Logout') }}</span>
@@ -208,6 +226,8 @@
             <script src="{{ asset('assets/jqueryui/jquery-ui.min.js') }}" type="text/javascript"></script>
 
             <script src="{{ asset('assets/tinymce/js/tinymce/tinymce.min.js') }}" type="text/javascript"></script>
+
+
 
             <script>
                 $(document).ready(function() {

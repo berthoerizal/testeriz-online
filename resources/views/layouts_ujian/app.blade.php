@@ -45,12 +45,12 @@
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item active">
                     <a class="nav-link text-secondary" href="{{ route('home.index') }}"><i class="fas fa-home"></i>
-                        <b>Home</b></span></a>
+                        <span>Home</span></span></a>
                 </li>
                 @if (Route::has('login'))
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link text-secondary" href="{{ route('dashboard') }}"><b>Dashboard</b></a>
+                            <a class="nav-link text-secondary" href="{{ route('dashboard') }}"><span>Dashboard</span></a>
                         </li>
                     @endauth
                 @endif

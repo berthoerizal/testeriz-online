@@ -39,8 +39,7 @@
                                             <button type="button" class="btn btn-secondary btn-sm"
                                                 data-dismiss="modal">Batal</button>
                                             @if ($soal->jenis_soal == 'obyektif')
-                                                <button type="button"
-                                                    onclick="selesaiUjian('Peserta telah menyelesaikan ujian')"
+                                                <button type="button" onclick="selesaiUjian('finish')"
                                                     class="btn btn-primary btn-sm">Yakin</button>
                                             @else
                                                 <button type="submit" class="btn btn-primary btn-sm">Yakin</button>
@@ -145,6 +144,35 @@
         ?>
     </div>
     <script>
+        var tanggal_waktu = new Date("{{ $tanggal_selesai . ' ' . $waktu_selesai }}").getTime();
+
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = tanggal_waktu - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            document.getElementById("demo").innerHTML = days + "d " + hours + "h " +
+                minutes + "m " + seconds + "s ";
+
+            // If the count down is over, write some text 
+            if (distance < 0) {
+                clearInterval(x);
+                selesaiUjian('Waktu ujian telah habis!');
+                // document.getElementById('btnSignIn').click(); //kondisi tombol ditekan otomatis
+            }
+        }, 1000);
+
         function changeButtonClass(button) {
             var buttons = document.getElementsByClassName('btn-option');
             for (var i = 0; i < buttons.length; i++) {
@@ -176,7 +204,14 @@
             xhr.send(formData);
         }
 
+        var status = 'not finish';
+
         function selesaiUjian(message) {
+
+            if (message == 'finish') {
+                status = 'finish';
+                message = 'Peserta telah menyelesaikan ujian.';
+            }
 
             alert(message);
 
@@ -213,50 +248,38 @@
         }
 
         // Set the date we're counting down to
-        var tanggal_waktu = new Date("{{ $tanggal_selesai . ' ' . $waktu_selesai }}").getTime();
 
-        // Update the count down every 1 second
-        var x = setInterval(function() {
+        pelanggaranUjian();
 
-            // Get todays date and time
-            var now = new Date().getTime();
+        function pelanggaranUjian() {
+            // Menambahkan event listener untuk menangkap saat pengguna mencoba beralih tab
+            document.addEventListener('visibilitychange', function(event) {
+                if (document.visibilityState === 'hidden') {
+                    // Menampilkan dialog peringatan
 
-            // Find the distance between now and the count down date
-            var distance = tanggal_waktu - now;
+                    if (status != 'finish') {
+                        alert('Anda terdeteksi mencoba beralih tab!');
+                        console.log(status);
+                    }
+                    //selesaiUjian('Anda terdeteksi mencoba beralih tab!');
+                }
+            });
 
-            // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Output the result in an element with id="demo"
-            document.getElementById("demo").innerHTML = days + "d " + hours + "h " +
-                minutes + "m " + seconds + "s ";
-
-            // If the count down is over, write some text 
-            if (distance < 0) {
-                clearInterval(x);
-                selesaiUjian('Waktu ujian telah habis!');
-                // document.getElementById('btnSignIn').click(); //kondisi tombol ditekan otomatis
-            }
-        }, 1000);
-
-        // Menambahkan event listener untuk menangkap saat pengguna mencoba beralih tab
-        document.addEventListener('visibilitychange', function(event) {
-            if (document.visibilityState === 'hidden') {
-                // Menampilkan dialog peringatan
-                alert('Anda terdeteksi mencoba beralih tab!');
-                //selesaiUjian('Anda terdeteksi mencoba beralih tab!');
-            }
-        });
+            // window.addEventListener("blur", function() {
+            //     // Pengguna beralih dari tab saat ini
+            //     alert('Anda terdeteksi mencoba beralih tab!');
+            // });
 
 
-        window.addEventListener('resize', function(event) {
-            // Tampilkan pesan peringatan kepada pengguna
-            alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
-            //selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
-        });
+            window.addEventListener('resize', function(event) {
+                // Tampilkan pesan peringatan kepada pengguna
+                if (status != 'finish') {
+                    alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                }
+                //selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+            });
+
+        }
 
         // Batasi fungsi pencarian
         document.addEventListener('keydown', function(event) {

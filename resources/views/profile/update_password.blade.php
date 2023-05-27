@@ -1,4 +1,5 @@
-<a class="btn btn-dark btn-sm" href="#" data-toggle="modal" data-target="#passwordModal{{ Auth::user()->id }}">
+<a class="btn btn-default btn-sm btn-block" href="#" data-toggle="modal"
+    data-target="#passwordModal{{ Auth::user()->id }}">
     <i class="fa fa-key"></i>
     Update Password
 </a>

@@ -19,6 +19,26 @@ class UjianController extends Controller
         $this->middleware('auth');
     }
 
+    public function ujian_sudah_selesai()
+    {
+        $title = "Ikuti Ujian | Sudah Selesai";
+
+        //sudah ujian
+        $soal = DB::table('daftars')
+            ->join('soals', 'daftars.id_soal', '=', 'soals.id')
+            ->join('users', 'soals.id_user', '=', 'users.id')
+            ->join('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
+            ->select('soals.*', 'daftars.status_daftar', 'users.name', 'jenis_soal.nama_jenis_soal')
+            ->where('daftars.id_user', '=', Auth::user()->id)
+            ->where('soals.status_soal', 'publish')
+            ->where('daftars.status_daftar', '!=', 1)
+            ->orderBy('soals.id', 'desc')
+            ->get();
+
+        return view('ujian.ujian_sudah_daftar', ['title' => $title, 'soal' => $soal]);
+    }
+
+
     public function ujian_sudah_daftar()
     {
         $title = "Ikuti Ujian | Sudah Daftar";
@@ -31,6 +51,7 @@ class UjianController extends Controller
             ->select('soals.*', 'daftars.status_daftar', 'users.name', 'jenis_soal.nama_jenis_soal')
             ->where('daftars.id_user', '=', Auth::user()->id)
             ->where('soals.status_soal', 'publish')
+            ->where('daftars.status_daftar', '!=', 2)
             ->orderBy('soals.id', 'desc')
             ->get();
 
@@ -253,6 +274,7 @@ class UjianController extends Controller
             ->where('id_user', Auth::user()->id)
             ->where('id_soal',  $request->input('id_soal'))
             ->update(array('status_daftar' => 2, 'ket' => $request->input('ket')));
+
         $user = User::find(Auth::user()->id);
 
 
@@ -261,10 +283,19 @@ class UjianController extends Controller
 
     public function selesai_ujian(Request $request, $id_soal)
     {
-        $update_daftars = DB::table('daftars')
+        $jumlah_terjawab = DB::table('jawabs')
+            ->where('id_soal', $id_soal)
+            ->where('id_user', Auth::user()->id)
+            ->where('status_jawab', 1)
+            ->count();
+        $jumlah_tanya = DB::table('tanyas')
+            ->where('id_soal', $id_soal)
+            ->count();
+        $nilai = $jumlah_terjawab / $jumlah_tanya * 100;
+        DB::table('daftars')
             ->where('id_user', Auth::user()->id)
             ->where('id_soal', $id_soal)
-            ->update(array('status_daftar' => 2, 'ket' => $request->input('ket')));
+            ->update(array('status_daftar' => 2, 'ket' => $request->input('ket'), 'nilai' => $nilai));
         $user = User::find(Auth::user()->id);
 
         return redirect(route('detail_nilai', ['id_soal' => $id_soal, 'id_user' => Crypt::encrypt($user->id)]));

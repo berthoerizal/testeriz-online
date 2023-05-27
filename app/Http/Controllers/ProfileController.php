@@ -21,15 +21,33 @@ class ProfileController extends Controller
 
         $id = Crypt::decrypt($id);
         $soal_count = DB::table('soals')->where('id_user', $id)->count();
-        $ujian_count = DB::table('daftars')->where('id_user', $id)->count();
+        $ujian_count = DB::table('daftars')->where('id_user', $id)->where('status_daftar', 2)->count();
 
         $user = User::find($id);
+
+        $result = DB::table('daftars')
+            ->leftJoin('soals', 'soals.id', '=', 'daftars.id_soal')
+            ->leftJoin('jenis_soal', 'jenis_soal.id', '=', 'soals.id_jenis_soal')
+            ->select('jenis_soal.nama_jenis_soal', DB::raw('count(daftars.id) as total_count'), DB::raw('sum(daftars.nilai) as total_sum'))
+            ->where('daftars.id_user', $id)
+            ->where('daftars.status_daftar', 2)
+            ->groupBy('jenis_soal.nama_jenis_soal')
+            ->orderByDesc(DB::raw('sum(daftars.nilai)'))
+            ->get();
+
+        $nilai = 0;
+        foreach ($result as $r) {
+            $nilai += $r->total_sum;
+        }
+
+
         if ($user->id_role == 0) {
 
             $ujian = DB::table('daftars')
                 ->select('daftars.*', 'soals.judul_soal', 'jenis_soal.nama_jenis_soal')
                 ->leftJoin('soals', 'daftars.id_soal', '=', 'soals.id')
                 ->leftJoin('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
+                ->where('daftars.status_daftar', 2)
                 ->where('daftars.id_user', $id)->get();
         } else {
             $ujian = DB::table('soals')
@@ -37,7 +55,7 @@ class ProfileController extends Controller
                 ->where('soals.id_user', $id)->get();
         }
         $title = $user->name;
-        return view('profile.show', ['title' => $title, 'user' => $user, 'soal_count' => $soal_count, 'ujian_count' => $ujian_count, 'ujian' => $ujian]);
+        return view('profile.show', ['title' => $title, 'user' => $user, 'soal_count' => $soal_count, 'ujian_count' => $ujian_count, 'ujian' => $ujian, 'result' => $result, 'nilai' => $nilai]);
     }
 
     public function update(Request $request, $id)

@@ -53,10 +53,7 @@
                                                 @if ($soal->tanggal_mulai == null || $soal->waktu_mulai == null)
                                                     -
                                                 @else
-                                                    <?php echo date('d-m-Y', strtotime($soal->tanggal_mulai)) .
-                                                        '
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ' .
-                                                        $soal->waktu_mulai; ?>
+                                                    <?php echo date('d-m-Y', strtotime($soal->tanggal_mulai)) . ' ' . $soal->waktu_mulai; ?>
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -82,37 +79,89 @@
                     </div>
                 </div>
             @else
-                <div class="col-md-12">
+                <div class="col-md-12 mb-2">
                     <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="id_jenis_soal">Kategori</label>
-                                        <select class="form-control" id="id_jenis_soal" name="id_jenis_soal">
-                                            <option value="0">Semua</option>
-                                            @foreach ($jenis_soal as $jenis)
-                                                <option value="{{ $jenis->id }}">
-                                                    {{ $jenis->nama_jenis_soal }}</option>
-                                            @endforeach
-                                        </select>
+                        <div class="card-body">
+                            <form action="{{ route('dashboard') }}">
+                                @method('GET')
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="id_jenis_soal">Kategori</label>
+                                            <select class="form-control" id="id_jenis_soal" name="id_jenis_soal">
+                                                <option value="0">Semua</option>
+                                                @foreach ($jenis_soal as $jenis)
+                                                    <option value="{{ $jenis->id }}"
+                                                        @if ($id_jenis_soal == $jenis->id) selected @endif>
+                                                        {{ $jenis->nama_jenis_soal }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="jenis_soal">Periode</label>
-                                    <div class="input-group mb-3">
-                                        <input id="dateRangeInput" type="text" class="form-control"
-                                            aria-label="Kode Ujian" aria-describedby="basic-addon2" name="peride" readonly>
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i
-                                                    class="fas fa-search"></i></button>
+                                    <div class="col-md-6">
+                                        <label for="jenis_soal">Tahun</label>
+                                        <div class="input-group mb-3">
+                                            <input id="dateRangeInput" type="number" class="form-control" aria-label="year"
+                                                aria-describedby="basic-addon2" name="year" value="{{ $year }}"
+                                                required>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="submit"
+                                                    id="button-addon2"><i class="fas fa-search"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
                         <div class="card-body">
-                            <canvas id="myChart" width="400" height="150"></canvas>
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home"
+                                        role="tab" aria-controls="pills-home" aria-selected="true">Grafik</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
+                                        role="tab" aria-controls="pills-profile" aria-selected="false">Tabel</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                                    aria-labelledby="pills-home-tab">
+                                    <canvas id="barChart" width="400" height="120"></canvas>
+                                </div>
+                                <div class="tab-pane fade" id="pills-profile" role="tabpanel"
+                                    aria-labelledby="pills-profile-tab">
+
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="dataTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="10%">#</th>
+                                                    <th width="80%">Nama</th>
+                                                    <th width="10%">Score</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($users as $user)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td><a
+                                                                href="{{ route('profile.show', Crypt::encrypt($user->id)) }}"><b>{{ $user->name }}</b></a>
+                                                        </td>
+                                                        <td class="text-right">{{ $user->score }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,45 +171,41 @@
     </div>
     </div>
 
+    <?php
+    //for chart js bar
+    $labels = [];
+    $scores = [];
+    
+    foreach ($users as $user) {
+        $labels[] = $user->name;
+        $scores[] = $user->score;
+    }
+    ?>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
-        $('#dateRangeInput').daterangepicker({
-            opens: 'left', // Position the calendar on the left side of the input field
-            startDate: moment().startOf('day'), // Set the initial start date
-            endDate: moment().endOf('day'), // Set the initial end date
-            locale: {
-                format: 'YYYY-MM-DD', // Format of the selected date range
+        ;
+        var ctx = document.getElementById('barChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode($labels); ?>,
+                datasets: [{
+                    label: 'Scores',
+                    data: <?php echo json_encode($scores); ?>,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
             },
-        });
-        // Data for the chart
-        var data = {
-            labels: ['Yudi', 'Yola', 'Cika', 'Budi', 'Andi', 'Rani'],
-            datasets: [{
-                label: 'Score',
-                data: [120, 180, 90, 200, 150, 300],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)' // Bar color
-            }]
-        };
-
-        // Configuration options
-        var options = {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        };
-
-        // Create the chart
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: data,
-            options: options
         });
     </script>
 @endsection

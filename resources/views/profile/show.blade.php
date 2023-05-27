@@ -13,6 +13,14 @@
         <div class="row">
             <div class="col-md-3 mb-3">
                 <div class="card">
+
+                    {{-- @if (Auth::user()->id == $user->id)
+                        <div class="card-header">
+                            @include('profile.update_password')
+                        </div>
+                    @endif --}}
+
+
                     <div class="card-body">
                         @if ($user->gambar != null)
                             <img class="card-img-top" src="{{ asset('assets/images/' . $user->gambar) }}" alt="Card image cap">
@@ -27,15 +35,18 @@
                     @if ($user->id_role == 0)
                         <div class="card-footer">
 
-                            <p style="font-size: 14px;">Total Ujian Diikuti : {{ $ujian_count }}</p>
-                            <canvas id="myChart" width="400" height="400"></canvas>
-
+                            <button class="btn btn-primary btn-sm btn-block"> <i class="fas fa-trophy text-warning"></i>
+                                <b>Total Score :
+                                    {{ $nilai }}</b></button>
                         </div>
+                    @endif
+                    @if ($user->id_role == 0)
                         <div class="card-footer">
 
-                            <button class="btn btn-primary btn-sm btn-block"> <i class="fas fa-trophy text-warning"></i>
-                                <b>Score :
-                                    100</b></button>
+                            <p style="font-size: 14px;">Total Ujian Diikuti : <span
+                                    class="badge badge-primary">{{ $ujian_count }}</span></p>
+                            <canvas id="myChartPie" width="400" height="400"></canvas>
+
                         </div>
                     @endif
                 </div>
@@ -43,11 +54,12 @@
             @if (Auth::user()->id == $user->id)
                 <div class="col-md-9">
                     <div class="card shadow mb-4">
-                        <div class="card-header">
-                            <div class="float-right">
-                                @include('profile.update_password')
+
+                        @if ($user->id_role == 0)
+                            <div class="card-header">
+                                <canvas id="myChartBar" width="400" height="150"></canvas>
                             </div>
-                        </div>
+                        @endif
 
                         <form action="{{ route('profile.update', $user->id) }}" method="POST"
                             enctype="multipart/form-data">
@@ -131,15 +143,12 @@
             @else
                 <div class="col-md-9">
                     <div class="card shadow mb-4">
-                        <div class="card-header">
-                            <div class="float-right">
-                                @if ($user->notactive == 1)
-                                    <span class="badge badge-danger">Tidak Aktif</span>
-                                @else
-                                    <span class="badge badge-success">Aktif</span>
-                                @endif
+                        @if ($user->id_role == 0)
+                            <div class="card-header">
+
+                                <canvas id="myChartBar" width="400" height="150"></canvas>
                             </div>
-                        </div>
+                        @endif
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" width="100%" cellspacing="0">
@@ -147,7 +156,13 @@
                                         <tr>
                                             <td class="text-center"><i class="fas fa-user"></i></td>
                                             <td>Nama</td>
-                                            <td>{{ $user->name }}</td>
+                                            <td>{{ $user->name }}
+                                                @if ($user->notactive == 1)
+                                                    <span class="badge badge-danger">Tidak Aktif</span>
+                                                @else
+                                                    <span class="badge badge-success">Aktif</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="text-center"><i class="fa fa-envelope"></i></td>
@@ -231,19 +246,80 @@
             }
         }
 
+        var result = <?php echo json_encode($result); ?>;
+
+        var labels = [];
+        var dataValues = [];
+        var backgroundColors = [];
+
+        result.forEach(function(row) {
+            labels.push(row.nama_jenis_soal);
+            dataValues.push(row.total_count);
+            backgroundColors.push(getRandomColor());
+        });
+
         var data = {
-            labels: ['Matematika', 'Bahasa Indonesia', 'IPA', 'IPS'],
+            labels: labels,
             datasets: [{
-                data: [12, 19, 3, 5],
-                backgroundColor: ['red', 'blue', 'yellow', 'green']
+                data: dataValues,
+                backgroundColor: backgroundColors,
             }]
         };
 
-        // Create the pie chart
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
+        var ctxPie = document.getElementById('myChartPie').getContext('2d');
+        new Chart(ctxPie, {
             type: 'pie',
             data: data
         });
+
+        // Bar Chart
+        var labelsBar = [];
+        var dataValuesBar = [];
+        var backgroundColorsBar = []; // Added array for bar chart colors
+
+        result.forEach(function(row) {
+            labelsBar.push(row.nama_jenis_soal);
+            dataValuesBar.push(row.total_sum);
+            backgroundColorsBar.push(getColorForLabel(row
+                .nama_jenis_soal)); // Use function to get color based on label
+        });
+
+        var dataBar = {
+            labels: labelsBar,
+            datasets: [{
+                label: 'Score Tertinggi',
+                data: dataValuesBar,
+                backgroundColor: backgroundColorsBar
+            }]
+        };
+
+        var ctxBar = document.getElementById('myChartBar').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: dataBar,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function getRandomColor() {
+            var r = Math.floor(Math.random() * 156) + 100; // Generate random values between 100 and 255
+            var g = Math.floor(Math.random() * 156) + 100;
+            var b = Math.floor(Math.random() * 156) + 100;
+            return 'rgb(' + r + ',' + g + ',' + b + ')';
+        }
+
+        function getColorForLabel(label) {
+            var index = labels.indexOf(label); // Get the index of the label in the labels array
+            if (index !== -1) {
+                return backgroundColors[index]; // Return the corresponding color from the pie chart colors
+            }
+            return 'rgba(75, 192, 192, 0.6)'; // Default color for unmatched labels
+        }
     </script>
 @endsection

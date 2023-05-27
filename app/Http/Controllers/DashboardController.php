@@ -17,6 +17,18 @@ class DashboardController extends Controller
 
     public function index()
     {
+        $id_jenis_soal = 0;
+        // get this year 
+        $year = date('Y');
+
+        if (isset($_GET['id_jenis_soal'])) {
+            $id_jenis_soal = $_GET['id_jenis_soal'];
+        }
+
+        if (isset($_GET['year'])) {
+            $year = $_GET['year'];
+        }
+
         $title = "Dashboard";
         $user_count = User::all()->where('notactive', 0)->count();
         $soal_count = DB::table('soals')->where('id_user', Auth::user()->id)->count();
@@ -35,10 +47,37 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        if ($id_jenis_soal == 0) {
+            $users = User::select('users.id', 'users.name', DB::raw('SUM(daftars.nilai) AS score'))
+                ->leftJoin('daftars', 'daftars.id_user', '=', 'users.id')
+                ->leftJoin('soals', 'soals.id', '=', 'daftars.id_soal')
+                ->leftJoin('jenis_soal', 'jenis_soal.id', '=', 'soals.id_jenis_soal')
+                ->where('daftars.status_daftar', 2)
+                ->where('users.id_role', 0)
+                ->where('users.notactive', 0)
+                ->where('daftars.created_at', 'like', '%' . $year . '%')
+                ->groupBy('users.name')
+                ->orderByDesc('score')
+                ->get();
+        } else {
+            $users = User::select('users.id', 'users.name', DB::raw('SUM(daftars.nilai) AS score'))
+                ->leftJoin('daftars', 'daftars.id_user', '=', 'users.id')
+                ->leftJoin('soals', 'soals.id', '=', 'daftars.id_soal')
+                ->leftJoin('jenis_soal', 'jenis_soal.id', '=', 'soals.id_jenis_soal')
+                ->where('daftars.status_daftar', 2)
+                ->where('users.id_role', 0)
+                ->where('users.notactive', 0)
+                ->where('jenis_soal.id', $id_jenis_soal)
+                ->where('daftars.created_at', 'like', '%' . $year . '%')
+                ->groupBy('users.name')
+                ->orderByDesc('score')
+                ->get();
+        }
+
         $jenis_soal = DB::table('jenis_soal')->get();
 
         $user_name = Auth::user()->name;
 
-        return view('dashboard', ['title' => $title, 'user_count' => $user_count, 'soal_count' => $soal_count, 'ujian_count' => $ujian_count, 'ujians' => $ujians, 'user_name' => $user_name, 'jenis_soal' => $jenis_soal]);
+        return view('dashboard', ['title' => $title, 'user_count' => $user_count, 'soal_count' => $soal_count, 'ujian_count' => $ujian_count, 'ujians' => $ujians, 'user_name' => $user_name, 'jenis_soal' => $jenis_soal, 'users' => $users, 'id_jenis_soal' => $id_jenis_soal, 'year' => $year]);
     }
 }

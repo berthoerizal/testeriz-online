@@ -41,6 +41,7 @@ Route::get('/nilai_peserta/{id}', ['as' => 'nilai_peserta', 'uses' => 'NilaiCont
 Route::get('soal/{id_soal}/peserta/{id_user}/detail_nilai', ['as' => 'detail_nilai', 'uses' => 'NilaiController@detail_nilai']);
 
 Route::get('/ujian_sudah_daftar', 'UjianController@ujian_sudah_daftar')->name('ujian_sudah_daftar');
+Route::get('/ujian_sudah_selesai', 'UjianController@ujian_sudah_selesai')->name('ujian_sudah_selesai');
 Route::post('/selesai_ujian_essay', 'UjianController@selesai_ujian_essay')->name('selesai_ujian_essay');
 Route::post('/nilai_essay', 'NilaiController@nilai_essay')->name('nilai_essay');
 

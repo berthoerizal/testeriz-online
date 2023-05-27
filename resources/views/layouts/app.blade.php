@@ -114,8 +114,9 @@
                     </a>
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="{{ route('ujian_sudah_daftar') }}">Sudah Daftar</a>
                             <a class="collapse-item" href="{{ route('ujian.index') }}">Semua Ujian</a>
+                            <a class="collapse-item" href="{{ route('ujian_sudah_daftar') }}">Sudah Daftar</a>
+                            <a class="collapse-item" href="{{ route('ujian_sudah_selesai') }}">Sudah Selesai</a>
                         </div>
                     </div>
                 </li>

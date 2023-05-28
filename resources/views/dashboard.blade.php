@@ -100,7 +100,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="jenis_soal">Tahun</label>
+                                        <label for="jenis_soal">Periode</label>
                                         <div class="input-group mb-3">
                                             <input id="dateRangeInput" type="number" class="form-control" aria-label="year"
                                                 aria-describedby="basic-addon2" name="year" value="{{ $year }}"

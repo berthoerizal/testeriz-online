@@ -55,3 +55,6 @@ Route::resource('jenis_soal', 'JenisSoalController');
 Route::put('/jawab_ujian/{slug_soal}', ['as' => 'jawab_ujian_post', 'uses' => 'UjianController@jawab_ujian_post']);
 Route::get('/jawab_ujian/{slug_soal}', ['as' => 'jawab_ujian', 'uses' => 'UjianController@jawab_ujian_get']);
 Route::post('soal/{id_soal}/selesai_ujian', ['as' => 'selesai_ujian', 'uses' => 'UjianController@selesai_ujian']);
+
+// route ranking in HomeController
+Route::get('/ranking/{id_jenis_soal}/{year}', ['as' => 'ranking', 'uses' => 'HomeController@ranking']);

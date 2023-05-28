@@ -65,6 +65,9 @@ class ProfileController extends Controller
             'name' => 'required',
             'gambar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'phone' => 'required|numeric|digits_between:10,13|unique:users,phone,' . $id,
+            'facebook' => 'url|unique:users,facebook,' . $id,
+            'twitter' => 'url|unique:users,twitter,' . $id,
+            'instagram' => 'url|unique:users,instagram,' . $id,
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -82,6 +85,9 @@ class ProfileController extends Controller
                 'email' => $request->email,
                 'gambar' => $gambar,
                 'phone' => $request->phone,
+                'facebook' => $request->facebook,
+                'twitter' => $request->twitter,
+                'instagram' => $request->instagram,
             ]);
 
             $id = Crypt::encrypt(Auth::user()->id);
@@ -97,7 +103,10 @@ class ProfileController extends Controller
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
-                'phone' => $request->phone
+                'phone' => $request->phone,
+                'facebook' => $request->facebook,
+                'twitter' => $request->twitter,
+                'instagram' => $request->instagram,
             ]);
 
             $id = Crypt::encrypt(Auth::user()->id);

@@ -39,64 +39,94 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <form action="{{ route('selesai_ujian_essay') }}" method="POST">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="id_soal" value="{{ $soal->id }}" />
-                    <div class="card text-justify">
-                        <div class="card-header">
-                            <div class="float-right">
-                                <button class="btn btn-dark btn-sm">
-                                    <b id="demo"></b>
-                                </button>
+                <input type="hidden" name="id_soal" value="{{ $soal->id }}" />
+                <div class="card text-justify">
+                    <div class="card-header">
+                        <div class="float-right">
+                            <button class="btn btn-dark btn-sm">
+                                <b id="demo"></b>
+                            </button>
 
 
-                                @include('ujian.modal_selesai_ujian')
+
+                            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal"
+                                data-target="#selesaiUjian">
+                                Selesai Ujian <i class="fa fa-arrow-right"></i>
+                            </a>
+                            <!-- Tambah Modal-->
+                            <div class="modal fade" id="selesaiUjian" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Selesai Ujian</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Yakin ingin menyelesaikan ujian ini?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                data-dismiss="modal">Batal</button>
+                                            @if ($soal->jenis_soal == 'obyektif')
+                                                <button type="button" onclick="selesaiUjian('finish')"
+                                                    class="btn btn-primary btn-sm">Yakin</button>
+                                            @else
+                                                <button type="button" onclick="selesaiUjian('finish')"
+                                                    class="btn btn-primary btn-sm">Yakin</button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                            <thead>
-                                                <th width="5%">#</th>
-                                                <th width="40%">Pertanyaan</th>
-                                                <th width="15%">Gambar</th>
-                                                <th width="40%">Jawaban Peserta</th>
-                                            </thead>
-                                            <tbody>
-                                                <?php
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <th width="5%">#</th>
+                                            <th width="40%">Pertanyaan</th>
+                                            <th width="15%">Gambar</th>
+                                            <th width="40%">Jawaban Peserta</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php
                                                 $i = 1;
                                                 foreach ($data as $row) {
                                                 $id_tanya = $row->id; ?>
-                                                <tr>
-                                                    <td><b><?php echo $i; ?>.</b>
-                                                    </td>
-                                                    <td><?php echo $row->pertanyaan; ?></td>
-                                                    @if ($row->gambar != null)
-                                                        <td>
-                                                            @include('ujian.modal_image')
-                                                        </td>
-                                                    @else
-                                                        <td><i>Tidak ada gambar.</i></td>
-                                                    @endif
+                                            <tr>
+                                                <td><b><?php echo $i; ?>.</b>
+                                                </td>
+                                                <td><?php echo $row->pertanyaan; ?></td>
+                                                @if ($row->gambar != null)
                                                     <td>
-                                                        <input type="hidden" name="id[]" value="{{ $row->id_jawab }}" />
-                                                        <textarea class="form-control form-control-sm" name="jawaban[]" id="jawaban" placeholder="...">{{ old('jawaban') }}</textarea>
+                                                        @include('ujian.modal_image')
                                                     </td>
-                                                </tr>
+                                                @else
+                                                    <td><i>Tidak ada gambar.</i></td>
+                                                @endif
+                                                <td>
+                                                    <input type="hidden" name="id[]" value="{{ $row->id_jawab }}" />
+                                                    <textarea class="form-control form-control-sm" name="jawaban[]" id="jawaban" placeholder="...">{{ old('jawaban') }}</textarea>
+                                                </td>
+                                            </tr>
 
-                                                <?php $i++;
+                                            <?php $i++;
                                                 }
                                                 ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
         <?php
@@ -106,7 +136,17 @@
         ?>
     </div>
     <script>
+        var status = 'not finish';
+
         function selesaiUjian(message) {
+
+
+            if (message == 'finish') {
+                status = 'finish';
+                message = 'Peserta telah menyelesaikan ujian.';
+            }
+
+
             var jawaban = [];
             var ids = [];
 
@@ -190,13 +230,19 @@
         document.addEventListener('visibilitychange', function(event) {
             if (document.visibilityState === 'hidden') {
                 // Menampilkan dialog peringatan
-                selesaiUjian('Anda terdeteksi mencoba beralih tab!');
+                if (status != 'finish') {
+                    alert('Anda terdeteksi mencoba beralih tab!');
+                    // selesaiUjian('Anda terdeteksi mencoba beralih tab!');
+                }
             }
         });
 
         window.addEventListener('resize', function(event) {
             // Tampilkan pesan peringatan kepada pengguna
-            selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+            if (status != 'finish') {
+                alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                // selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+            }
         });
 
         // Batasi fungsi pencarian

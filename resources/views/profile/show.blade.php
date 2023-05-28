@@ -29,8 +29,19 @@
                                 alt="Card image cap">
                         @endif
                         <div class="card-body text-center">
-                            <p class="card-text"><b>{{ $user->name }}</b></p>
+                            <b>{{ $user->name }}</b>
                         </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ $user->facebook }}">
+                            <i class="fab fa-facebook-f" style="color: #1877F2;"></i>
+                        </a>
+                        <a href="{{ $user->twitter }}">
+                            <i class="fab fa-twitter" style="color: #1DA1F2;"></i>
+                        </a>
+                        <a href="{{ $user->instagram }}">
+                            <i class="fab fa-instagram" style="color: #E4405F;"></i>
+                        </a>
                     </div>
                     @if ($user->id_role == 0)
                         <div class="card-footer">
@@ -86,6 +97,24 @@
                                                 <td>Phone</td>
                                                 <td><input type="text" class="form-control form-control-sm"
                                                         name="phone" value="{{ $user->phone }}" required></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center"><i class="fab fa-facebook-f"></i></td>
+                                                <td>URL Facebook</td>
+                                                <td><input type="text" class="form-control form-control-sm"
+                                                        name="facebook" value="{{ $user->facebook }}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center"><i class="fab fa-twitter"></i></td>
+                                                <td>URL Twitter</td>
+                                                <td><input type="text" class="form-control form-control-sm"
+                                                        name="twitter" value="{{ $user->twitter }}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center"><i class="fab fa-instagram"></i></td>
+                                                <td>URL Instagram</td>
+                                                <td><input type="text" class="form-control form-control-sm"
+                                                        name="instagram" value="{{ $user->instagram }}"></td>
                                             </tr>
                                             <tr>
                                                 <td class="text-center"><i class="fas fa-image"></i></td>

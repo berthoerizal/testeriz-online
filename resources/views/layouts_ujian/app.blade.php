@@ -54,6 +54,10 @@
                         </li>
                     @endauth
                 @endif
+                <li class="nav-item">
+                    <a class="nav-link text-secondary"
+                        href="{{ route('ranking', ['id_jenis_soal' => 0, 'year' => 2023]) }}"><span>Rangking</span></a>
+                </li>
             </ul>
             <div class="form-inline my-2 my-lg-0">
                 @if (Route::has('login'))

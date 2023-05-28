@@ -39,11 +39,14 @@
         <h1 class="h3 mb-2 text-gray-800">{{ $title }} | {{ $user->name }}</h1>
         <hr>
 
-        @if ($soal->status_nilai == 'draft' && Auth::user()->id_role != '21')
+        @if ($soal->status_nilai == 'draft' && Auth::user()->id != $soal->id_user)
             <div class="alert alert-secondary" role="alert">
                 Nilai belum di-<b>Publish</b> oleh <b>{{ $soal->name }}</b>.
             </div>
-        @elseif($soal->status_nilai == 'publish' || Auth::user()->id_role == '21')
+        @elseif(
+            $soal->status_nilai == 'publish' ||
+                Auth::user()->id_role == '21' ||
+                (Auth::user()->id == $soal->id_user && $soal->status_nilai == 'draft'))
             <div class="row">
                 <div class="col-md-3 mb-3">
                     <div class="card">

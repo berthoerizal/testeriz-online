@@ -117,16 +117,27 @@ class NilaiController extends Controller
     {
         $ids = $request->input('id');
         $nilai_users = $request->input('nilai');
+
+        $max_nilai = 100;
+        $nilai = 0;
         foreach ($ids as $k => $id) {
-            $values = array(
-                'status_jawab' => $nilai_users[$k]
-            );
-            DB::table('jawabs')
-                ->where('id', '=', $id)
-                ->update($values);
+            $nilai += $nilai_users[$k];
         }
 
-        return redirect()->back();
+        if ($nilai > $max_nilai) {
+            return redirect()->back()->with('error', 'Nilai melebihi batas maksimal 100');
+        } else {
+            foreach ($ids as $k => $id) {
+                $values = array(
+                    'status_jawab' => $nilai_users[$k]
+                );
+                DB::table('jawabs')
+                    ->where('id', '=', $id)
+                    ->update($values);
+            }
+
+            return redirect()->back()->with('success', 'Nilai berhasil disimpan');
+        }
     }
 
     public function reset_nilai($id_soal, $flag, $id_user = null)

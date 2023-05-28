@@ -33,6 +33,7 @@
 
 
     <link rel="stylesheet" href="{{ asset('assets/css/style_admin.css') }}">
+
     <style>
         td {
             font-size: 14px;
@@ -241,7 +242,7 @@
                 });
                 tinymce.init({
                     selector: '.textarea-tinymce',
-                    height: 100,
+                    height: 170,
                     theme: 'modern',
                     plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help',
                     toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',

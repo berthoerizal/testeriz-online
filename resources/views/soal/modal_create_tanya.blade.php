@@ -23,7 +23,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="pertanyaan">Pertanyaan</label>
-                                    <textarea name="pertanyaan" id="pertanyaan" class="form-control textarea-tinymce" height="100px">{{ old('pertanyaan') }}</textarea>
+                                    <textarea name="pertanyaan" id="pertanyaan" class="form-control textarea-tinymce">{{ old('pertanyaan') }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">

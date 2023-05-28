@@ -258,10 +258,10 @@
                     // Menampilkan dialog peringatan
 
                     if (status != 'finish') {
-                        alert('Anda terdeteksi mencoba beralih tab!');
+                        selesaiUjian('Anda terdeteksi mencoba beralih tab!');
+                        //    alert('Anda terdeteksi mencoba beralih tab!');
                         console.log(status);
                     }
-                    //selesaiUjian('Anda terdeteksi mencoba beralih tab!');
                 }
             });
 
@@ -274,9 +274,9 @@
             window.addEventListener('resize', function(event) {
                 // Tampilkan pesan peringatan kepada pengguna
                 if (status != 'finish') {
-                    alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                    selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                    //   alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
                 }
-                //selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
             });
 
         }

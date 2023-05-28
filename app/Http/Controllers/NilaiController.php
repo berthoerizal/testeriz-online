@@ -33,7 +33,7 @@ class NilaiController extends Controller
 
         if ($soal->jenis_soal == "essay") {
             $nilais = DB::table('jawabs')
-                ->select('jawabs.id_soal', 'jawabs.id_user', 'users.name AS nama_peserta', 'users.email', 'jenis_soal.nama_jenis_soal', 'soals.judul_soal', 'daftars.status_daftar', DB::raw('SUM(jawabs.status_jawab) AS total_nilai'), DB::raw('SUM(jawabs.status_jawab) AS terjawab'))
+                ->select('jawabs.id_soal', 'jawabs.id_user', 'users.name AS nama_peserta', 'users.email', 'jenis_soal.nama_jenis_soal', 'soals.judul_soal', 'daftars.status_daftar', DB::raw('SUM(jawabs.status_jawab) AS total_nilai'), DB::raw('SUM(jawabs.status_jawab) AS terjawab'), 'daftars.ket')
                 ->leftJoin('users', 'jawabs.id_user', '=', 'users.id')
                 ->leftJoin('soals', 'jawabs.id_soal', '=', 'soals.id')
                 ->leftJoin('daftars', function ($join) {
@@ -46,7 +46,7 @@ class NilaiController extends Controller
                 ->get();
         } else {
             $nilais = DB::table('jawabs')
-                ->select('jawabs.id_soal', 'jawabs.id_user', 'users.name as nama_peserta', 'users.email', 'jenis_soal.nama_jenis_soal', 'soals.judul_soal', 'daftars.status_daftar', DB::raw("(SUM(jawabs.status_jawab) / $count_tanyas) * 100 as total_nilai"), DB::raw('SUM(jawabs.status_jawab) as terjawab'))
+                ->select('jawabs.id_soal', 'jawabs.id_user', 'users.name as nama_peserta', 'users.email', 'jenis_soal.nama_jenis_soal', 'soals.judul_soal', 'daftars.status_daftar', DB::raw("(SUM(jawabs.status_jawab) / $count_tanyas) * 100 as total_nilai"), DB::raw('SUM(jawabs.status_jawab) as terjawab'), 'daftars.ket')
                 ->leftJoin('users', 'jawabs.id_user', '=', 'users.id')
                 ->leftJoin('soals', 'jawabs.id_soal', '=', 'soals.id')
                 ->leftJoin('daftars', function ($join) {

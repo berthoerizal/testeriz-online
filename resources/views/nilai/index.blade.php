@@ -33,6 +33,7 @@
                                 <th>Email</th>
                                 <th>Status</th>
                                 <th>Nilai</th>
+                                <th>Ket</th>
                                 <th width="30%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -52,6 +53,7 @@
                                     <?php } ?>
                                 </td>
                                 <td class="text-right"><?php echo number_format($nilai->total_nilai); ?></td>
+                                <td><?php echo $nilai->ket; ?></td>
                                 <td class="text-center">
                                     <a class="btn btn-primary btn-sm"
                                         href="{{ route('detail_nilai', ['id_soal' => $nilai->id_soal, 'id_user' => Crypt::encrypt($nilai->id_user)]) }}">

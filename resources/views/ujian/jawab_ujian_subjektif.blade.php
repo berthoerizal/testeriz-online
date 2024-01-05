@@ -70,7 +70,7 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary btn-sm"
                                                 data-dismiss="modal">Batal</button>
-                                            @if ($soal->jenis_soal == 'obyektif')
+                                            @if ($soal->jenis_soal == 'objektif')
                                                 <button type="button" onclick="selesaiUjian('finish')"
                                                     class="btn btn-primary btn-sm">Yakin</button>
                                             @else
@@ -133,10 +133,12 @@
         $id_soal = $soal->id;
         $tanggal_selesai = $soal->tanggal_selesai;
         $waktu_selesai = $soal->waktu_selesai;
+        $status_pelanggaran = $soal->status_pelanggaran;
         ?>
     </div>
     <script>
         var status = 'not finish';
+        var status_pelanggaran = "{{ $status_pelanggaran }}";
 
         function selesaiUjian(message) {
 
@@ -169,7 +171,7 @@
             data.append("ket", message);
 
             // Konfigurasi fetch request
-            var url = "{{ route('selesai_ujian_essay') }}";
+            var url = "{{ route('selesai_ujian_subjektif') }}";
             var options = {
                 method: 'POST',
                 headers: {
@@ -226,24 +228,34 @@
             }
         }, 1000);
 
-        // Menambahkan event listener untuk menangkap saat pengguna mencoba beralih tab
-        document.addEventListener('visibilitychange', function(event) {
-            if (document.visibilityState === 'hidden') {
-                // Menampilkan dialog peringatan
-                if (status != 'finish') {
-                    alert('Anda terdeteksi mencoba beralih tab!');
-                    // selesaiUjian('Anda terdeteksi mencoba beralih tab!');
-                }
-            }
-        });
 
-        window.addEventListener('resize', function(event) {
-            // Tampilkan pesan peringatan kepada pengguna
-            if (status != 'finish') {
-                alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
-                // selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+        pelanggaranUjian(status_pelanggaran);
+
+        function pelanggaranUjian(status_pelanggaran) {
+            if (status_pelanggaran == "1") {
+                // cek jika beralih tab
+                document.addEventListener('visibilitychange', function(event) {
+                    if (document.visibilityState === 'hidden') {
+                        // Menampilkan dialog peringatan
+
+                        if (status != 'finish') {
+                            //selesaiUjian('Anda terdeteksi mencoba beralih tab!');
+                            alert('Anda terdeteksi mencoba beralih tab!');
+                            console.log(status);
+                        }
+                    }
+                });
+
+                //cek jika mengubah ukuran jendela
+                window.addEventListener('resize', function(event) {
+                    // Tampilkan pesan peringatan kepada pengguna
+                    if (status != 'finish') {
+                        //selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                        alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                    }
+                });
             }
-        });
+        }
 
         // Batasi fungsi pencarian
         document.addEventListener('keydown', function(event) {
@@ -263,5 +275,11 @@
         for (var i = 0; i < inputElements.length; i++) {
             inputElements[i].setAttribute('onpaste', 'return false');
         }
+
+        // Batasi fungsi klik kanan
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            alert('Fitur ini dinonaktifkan selama ujian berlangsung.');
+        });
     </script>
 @endsection

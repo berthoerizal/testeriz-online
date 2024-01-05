@@ -15,7 +15,7 @@
     <div class="modal-dialog bd-example-modal-lg" role="document">
         <div class="modal-content custom-modal">
             <div class="modal-header">
-                <h5 class="modal-title text-warning"><i class="fas fa-exclamation-triangle"></i> <b>Peringatan</b>
+                <h5 class="modal-title text-primary"><i class="fas fa-info"></i> <b>Daftar Ujian</b>
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -24,6 +24,7 @@
             <form class="form-inline" action="{{ route('daftar_ujian') }}" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="modal-body text-justify" style="padding: 20px 30px;">
+                    <?php if($soal->status_pelanggaran==1) { ?>
                     <p>Saat melaksanakan ujian, harap diperhatikan hal berikut:</p>
                     <p><b class="text-danger">Tidak diperbolehkan berpindah halaman atau membuka tab baru</b> selama
                         ujian
@@ -38,6 +39,7 @@
                     <p><b class="text-danger">Segala bentuk kecurangan</b> akan dianggap pelanggaran serius.</p>
 
 
+                    <?php } ?>
 
 
                     <input type="hidden" name="id_soal" value="{{ $soal->id }}" />

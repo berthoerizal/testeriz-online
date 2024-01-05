@@ -31,7 +31,7 @@ class NilaiController extends Controller
             ->where('id_soal', $soal->id)
             ->count();
 
-        if ($soal->jenis_soal == "essay") {
+        if ($soal->jenis_soal == "subjektif") {
             $nilais = DB::table('jawabs')
                 ->select('jawabs.id_soal', 'jawabs.id_user', 'users.name AS nama_peserta', 'users.email', 'jenis_soal.nama_jenis_soal', 'soals.judul_soal', 'daftars.status_daftar', DB::raw('SUM(jawabs.status_jawab) AS total_nilai'), DB::raw('SUM(jawabs.status_jawab) AS terjawab'), 'daftars.ket')
                 ->leftJoin('users', 'jawabs.id_user', '=', 'users.id')
@@ -90,7 +90,7 @@ class NilaiController extends Controller
             ->where('id_soal', $id_soal)
             ->count();
 
-        if ($soal->jenis_soal == 'essay') {
+        if ($soal->jenis_soal == 'subjektif') {
             $nilai = DB::table('jawabs')
                 ->leftJoin('users', 'jawabs.id_user', '=', 'users.id')
                 ->leftJoin('soals', 'jawabs.id_soal', '=', 'soals.id')
@@ -113,9 +113,11 @@ class NilaiController extends Controller
         return view('nilai.show', ['title' => $title, 'jawabs' => $jawabs, 'soal' => $soal, 'nilai' => $nilai, 'user' => $user, 'jumlah_pertanyaan' => $count_tanyas]);
     }
 
-    public function nilai_essay(Request $request)
+    public function nilai_subjektif(Request $request)
     {
         $ids = $request->input('id');
+        $id_soal = $request->input('id_soal');
+        $id_user = $request->input('id_user');
         $nilai_users = $request->input('nilai');
 
         $max_nilai = 100;
@@ -135,6 +137,7 @@ class NilaiController extends Controller
                     ->where('id', '=', $id)
                     ->update($values);
             }
+            DB::table('daftars')->where('id_soal', $id_soal)->where('id_user', $id_user)->update(['nilai' => $nilai]);
 
             return redirect()->back()->with('success', 'Nilai berhasil disimpan');
         }

@@ -97,7 +97,7 @@
                                             <td>Jumlah Pertanyaan</td>
                                             <td>{{ $jumlah_pertanyaan }}</td>
                                         </tr>
-                                        <?php if($soal->jenis_soal != 'essay'){ ?>
+                                        <?php if($soal->jenis_soal != 'subjektif'){ ?>
                                         <tr>
                                             <td class="text-center"><i class="fa fa-check"></i></td>
                                             <td> Jawaban Benar</td>
@@ -122,11 +122,12 @@
                         </div>
                     </div>
                 </div>
-                @if ($soal->jenis_soal == 'essay')
+                @if ($soal->jenis_soal == 'subjektif')
                     <div class="col-md-12">
-                        <form action="{{ route('nilai_essay') }}" method="POST">
+                        <form action="{{ route('nilai_subjektif') }}" method="POST">
                             {{ csrf_field() }}
                             <input type="hidden" name="id_soal" value="{{ $soal->id }}" />
+                            <input type="hidden" name="id_user" value="{{ $user->id }}" />
                             <div class="card shadow col-md-12 mb-3">
                                 <div class="card-header">
                                     <div class="float-left">

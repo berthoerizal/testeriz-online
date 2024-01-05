@@ -246,6 +246,17 @@
                                                 @endif
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td width="5%"><i class="fa fa-trophy"></i></td>
+                                            <td>Status Pelanggaran</td>
+                                            <td>
+                                                @if ($soal->status_pelanggaran == 0)
+                                                    <span class="badge badge-danger"><?php echo 'Tidak Aktif'; ?></b>
+                                                    @else
+                                                        <span class="badge badge-success"><?php echo 'Aktif'; ?></b>
+                                                @endif
+                                            </td>
+                                        </tr>
                                     @endif
                                     <tr>
                                         <td width="5%"><i class="fa fa-question"></i></td>
@@ -303,13 +314,14 @@
         <div class="modal-dialog bd-example-modal-lg" role="document">
             <div class="modal-content custom-modal">
                 <div class="modal-header">
-                    <h5 class="modal-title text-warning"><i class="fas fa-exclamation-triangle"></i> <b>Peringatan</b>
+                    <h5 class="modal-title text-primary"><i class="fas fa-info"></i> <b>Masuk Ujian</b>
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body text-justify" style="padding: 20px 30px;">
+                    <?php if($soal->status_pelanggaran==1) { ?>
                     <p>Saat melaksanakan ujian, harap diperhatikan hal berikut:</p>
                     <p><b class="text-danger">Tidak diperbolehkan berpindah halaman atau membuka tab baru</b> selama ujian
                         berlangsung. Jika
@@ -320,8 +332,9 @@
                         akan
                         tertutup dan tidak dapat diakses kembali</p>
                     <p><b class="text-danger">Segala bentuk kecurangan</b> akan dianggap pelanggaran serius.</p>
-                </div>
-                <div class="modal-footer">
+                    <?php } ?>
+
+
                     @if ($cek_daftar == 0)
                     @else
                         <a href="{{ route('tunggu_ujian', ['slug_soal' => $soal->slug_soal]) }}"

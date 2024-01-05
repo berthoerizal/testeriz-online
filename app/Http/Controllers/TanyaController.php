@@ -46,7 +46,7 @@ class TanyaController extends Controller
             // $resorce->move(\base_path() . "/../assets/images", $gambar);
             $resorce->move(public_path() . '/assets/images', $gambar);
 
-            if ($soal->jenis_soal == 'obyektif') {
+            if ($soal->jenis_soal == 'objektif') {
                 $tanya = Tanya::create([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,
@@ -68,7 +68,7 @@ class TanyaController extends Controller
             }
         } else {
             $gambar = NULL;
-            if ($soal->jenis_soal == 'obyektif') {
+            if ($soal->jenis_soal == 'objektif') {
                 $tanya = Tanya::create([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,
@@ -133,7 +133,7 @@ class TanyaController extends Controller
             $old_image = public_path() . "/assets/images/" . $tanya->gambar;
             @unlink($old_image);
 
-            if ($soal->jenis_soal == 'obyektif') {
+            if ($soal->jenis_soal == 'objektif') {
                 $tanya->update([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,
@@ -163,7 +163,7 @@ class TanyaController extends Controller
             }
         } else {
             $tanya = Tanya::find($id);
-            if ($soal->jenis_soal == 'obyektif') {
+            if ($soal->jenis_soal == 'objektif') {
                 $tanya->update([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,

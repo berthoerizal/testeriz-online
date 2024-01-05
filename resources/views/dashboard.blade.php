@@ -9,6 +9,16 @@
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">{{ $title }}</h1>
         <hr />
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="https://chat.openai.com/" class="btn btn-dark btn-md" target="_blank"><b><i
+                            class="fa fa-comments"></i> Chat GPT</b></a>
+            </div>
+        </div>
+
+        <br>
+
         <div class="row">
 
             @if (Auth::user()->id_role == 0)

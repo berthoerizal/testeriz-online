@@ -56,7 +56,7 @@
                 @endif
                 <li class="nav-item">
                     <a class="nav-link text-secondary"
-                        href="{{ route('ranking', ['id_jenis_soal' => 0, 'year' => 2023]) }}"><span>Rangking</span></a>
+                        href="{{ route('ranking', ['id_jenis_soal' => 0, 'year' => 2024]) }}"><span>Rangking</span></a>
                 </li>
             </ul>
             <div class="form-inline my-2 my-lg-0">
@@ -84,7 +84,7 @@
     <div id="footer" class="bg-light fixed-bottom">
         <div class="row text-center mt-3">
             <div class="col">
-                <p>Copyright &copy; {{ $konfigurasi->author }} | 2021</p>
+                <p>Copyright &copy; {{ $konfigurasi->author }} | <?php echo date('Y'); ?></p>
             </div>
         </div>
     </div>

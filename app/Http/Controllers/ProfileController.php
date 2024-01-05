@@ -31,6 +31,7 @@ class ProfileController extends Controller
             ->select('jenis_soal.nama_jenis_soal', DB::raw('count(daftars.id) as total_count'), DB::raw('sum(daftars.nilai) as total_sum'))
             ->where('daftars.id_user', $id)
             ->where('daftars.status_daftar', 2)
+            ->where('soals.status_nilai', 'publish')
             ->groupBy('jenis_soal.nama_jenis_soal')
             ->orderByDesc(DB::raw('sum(daftars.nilai)'))
             ->get();

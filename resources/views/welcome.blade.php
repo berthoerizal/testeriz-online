@@ -73,13 +73,13 @@
                     <div class="col-md-8">
                         <p id="desc2">{!! $konfigurasi->desc2 !!}</p>
                     </div>
-                    <dvi class="col-md-4">
+                    <div class="col-md-4">
                         <div class="content">
                             <div class="value" akhi="<?php echo $user_count; ?>">0</div>
                         </div>
                         <p class="text-center"><b id="user">Pengguna
                                 Aktif</b></p>
-                    </dvi>
+                    </div>
                 </div>
             </div>
         </div>

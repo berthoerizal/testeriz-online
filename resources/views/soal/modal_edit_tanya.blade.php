@@ -13,7 +13,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            @if ($soal->jenis_soal == 'essay')
+            @if ($soal->jenis_soal == 'subjektif')
                 <form action="{{ route('tanya.update', $tanya->id) }}" method="POST" enctype="multipart/form-data">
                     @method('PUT')
                     {{ csrf_field() }}

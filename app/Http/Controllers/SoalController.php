@@ -77,6 +77,7 @@ class SoalController extends Controller
                 'waktu_selesai' => $request->waktu_selesai,
                 'status_nilai' => 'draft',
                 'id_jenis_soal' => $request->id_jenis_soal,
+                'status_pelanggaran' => $request->status_pelanggaran
             ]);
         } else {
             $materi_file = NULL;
@@ -97,6 +98,7 @@ class SoalController extends Controller
                 'waktu_selesai' => $request->waktu_selesai,
                 'status_nilai' => 'draft',
                 'id_jenis_soal' => $request->id_jenis_soal,
+                'status_pelanggaran' => $request->status_pelanggaran
             ]);
         }
 
@@ -190,6 +192,7 @@ class SoalController extends Controller
                 'waktu_selesai' => $request->waktu_selesai,
                 'pass_soal' => $request->pass_soal,
                 'id_jenis_soal' => $request->id_jenis_soal,
+                'status_pelanggaran' => $request->status_pelanggaran
             ]);
 
             if (!$soal) {
@@ -213,6 +216,7 @@ class SoalController extends Controller
                 'waktu_selesai' => $request->waktu_selesai,
                 'pass_soal' => $request->pass_soal,
                 'id_jenis_soal' => $request->id_jenis_soal,
+                'status_pelanggaran' => $request->status_pelanggaran
             ]);
 
             if (!$soal) {

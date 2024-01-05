@@ -148,7 +148,7 @@ class UjianController extends Controller
 
         $title = "Ujian";
         $soal = DB::table('soals')->where('slug_soal', $slug_soal)->first();
-        if ($soal->jenis_soal == 'obyektif') {
+        if ($soal->jenis_soal == 'objektif') {
             $data = DB::table('tanyas')
                 ->where('id_soal', $soal->id)
                 ->where('id', $request->id_tanya)
@@ -184,10 +184,8 @@ class UjianController extends Controller
     {
         $title = "Ujian";
         $soal = DB::table('soals')->where('slug_soal', $slug_soal)->first();
-        if ($soal->jenis_soal == 'obyektif') {
+        if ($soal->jenis_soal == 'objektif') {
             $data = DB::table('tanyas')->where('id_soal', $soal->id)->first();
-
-
 
             $tanya = DB::table('tanyas')
                 ->select('tanyas.id', 'jawabs.jawaban_user')
@@ -226,7 +224,7 @@ class UjianController extends Controller
                 ->first();
 
             if ($cek_daftar->status_daftar == 1) {
-                return view('ujian.jawab_ujian_essay', ['data' => $data, 'soal' => $soal, 'title' => $title]);
+                return view('ujian.jawab_ujian_subjektif', ['data' => $data, 'soal' => $soal, 'title' => $title]);
             } else {
                 return abort(404);
             }
@@ -255,7 +253,7 @@ class UjianController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function selesai_ujian_essay(Request $request)
+    public function selesai_ujian_subjektif(Request $request)
     {
 
 

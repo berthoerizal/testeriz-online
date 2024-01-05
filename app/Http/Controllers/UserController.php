@@ -116,8 +116,9 @@ class UserController extends Controller
             session()->flash('error', 'Password gagal diubah');
             return redirect(route('user.index'));
         } else {
-            $karakter = "ABCDEFGHIJKLMNOPQRSTUVWQYZ1234567890";
-            $password = substr(str_shuffle($karakter), 0, 8);
+            // $karakter = "ABCDEFGHIJKLMNOPQRSTUVWQYZ1234567890";
+            // $password = substr(str_shuffle($karakter), 0, 8);
+            $password = "12345678";
             $user = User::find($id);
             $user->update([
                 'password' => Hash::make($password)

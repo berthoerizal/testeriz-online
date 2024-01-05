@@ -14,7 +14,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            @if ($soal->jenis_soal == 'essay')
+            @if ($soal->jenis_soal == 'subjektif')
                 <form action="{{ route('tanya.store') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <input type="hidden" name="slug_soal" value="{{ $soal->slug_soal }}" />
@@ -43,7 +43,7 @@
                         <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
                     </div>
                 </form>
-            @elseif($soal->jenis_soal == 'obyektif')
+            @elseif($soal->jenis_soal == 'objektif')
                 <form action="{{ route('tanya.store') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <input type="hidden" name="slug_soal" value="{{ $soal->slug_soal }}" />

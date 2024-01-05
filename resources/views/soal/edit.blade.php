@@ -80,7 +80,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="status_soal">Status Ujian</label>
                                     <select class="form-control" id="status_soal" name="status_soal">
@@ -91,7 +91,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="status_nilai">Status Nilai</label>
                                     <select class="form-control" id="status_nilai" name="status_nilai">
@@ -102,13 +102,25 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="status_pelanggaran">Status Pelanggaran</label>
+                                    <select class="form-control" id="status_pelanggaran" name="status_pelanggaran">
+                                        <option value="0" @if ($soal->status_pelanggaran == 0) selected @endif>
+                                            Tidak Aktif</option>
+                                        <option value="1" @if ($soal->status_pelanggaran == 1) selected @endif>
+                                            Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="tanggal_mulai">Tanggal Mulai</label>
-                                            <input type="date" class="form-control form-control-sm" name="tanggal_mulai"
-                                                value="{{ $soal->tanggal_mulai }}" id="tanggal_mulai">
+                                            <input type="date" class="form-control form-control-sm"
+                                                name="tanggal_mulai" value="{{ $soal->tanggal_mulai }}"
+                                                id="tanggal_mulai">
                                         </div>
                                     </div>
                                     <div class="col-md-3">

@@ -38,7 +38,7 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary btn-sm"
                                                 data-dismiss="modal">Batal</button>
-                                            @if ($soal->jenis_soal == 'obyektif')
+                                            @if ($soal->jenis_soal == 'objektif')
                                                 <button type="button" onclick="selesaiUjian('finish')"
                                                     class="btn btn-primary btn-sm">Yakin</button>
                                             @else
@@ -141,10 +141,12 @@
         $id_soal = $soal->id;
         $tanggal_selesai = $soal->tanggal_selesai;
         $waktu_selesai = $soal->waktu_selesai;
+        $status_pelanggaran = $soal->status_pelanggaran;
         ?>
     </div>
     <script>
         var tanggal_waktu = new Date("{{ $tanggal_selesai . ' ' . $waktu_selesai }}").getTime();
+        var status_pelanggaran = "{{ $status_pelanggaran }}";
 
         // Update the count down every 1 second
         var x = setInterval(function() {
@@ -249,37 +251,35 @@
 
         // Set the date we're counting down to
 
-        pelanggaranUjian();
+        pelanggaranUjian(status_pelanggaran);
 
-        function pelanggaranUjian() {
-            // Menambahkan event listener untuk menangkap saat pengguna mencoba beralih tab
-            document.addEventListener('visibilitychange', function(event) {
-                if (document.visibilityState === 'hidden') {
-                    // Menampilkan dialog peringatan
+        function pelanggaranUjian(status_pelanggaran) {
+            if (status_pelanggaran == "1") {
+                console.log(status_pelanggaran);
+                // cek jika beralih tab
+                document.addEventListener('visibilitychange', function(event) {
+                    if (document.visibilityState === 'hidden') {
+                        // Menampilkan dialog peringatan
 
-                    if (status != 'finish') {
-                        selesaiUjian('Anda terdeteksi mencoba beralih tab!');
-                        //    alert('Anda terdeteksi mencoba beralih tab!');
-                        console.log(status);
+                        if (status != 'finish') {
+                            // selesaiUjian('Anda terdeteksi mencoba beralih tab!');
+                            alert('Anda terdeteksi mencoba beralih tab!');
+                            console.log(status);
+                        }
                     }
-                }
-            });
+                });
 
-            // window.addEventListener("blur", function() {
-            //     // Pengguna beralih dari tab saat ini
-            //     alert('Anda terdeteksi mencoba beralih tab!');
-            // });
-
-
-            window.addEventListener('resize', function(event) {
-                // Tampilkan pesan peringatan kepada pengguna
-                if (status != 'finish') {
-                    selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
-                    //   alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
-                }
-            });
-
+                //cek jika mengubah ukuran jendela
+                window.addEventListener('resize', function(event) {
+                    // Tampilkan pesan peringatan kepada pengguna
+                    if (status != 'finish') {
+                        //selesaiUjian('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                        alert('Anda terdeteksi mencoba mengubah ukuran jendela!');
+                    }
+                });
+            }
         }
+
 
         // Batasi fungsi pencarian
         document.addEventListener('keydown', function(event) {
@@ -299,5 +299,11 @@
         for (var i = 0; i < inputElements.length; i++) {
             inputElements[i].setAttribute('onpaste', 'return false');
         }
+
+        // Batasi fungsi klik kanan
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            alert('Fitur ini dinonaktifkan selama ujian berlangsung.');
+        });
     </script>
 @endsection

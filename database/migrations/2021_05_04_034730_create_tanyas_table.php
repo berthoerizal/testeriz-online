@@ -25,6 +25,7 @@ class CreateTanyasTable extends Migration
             $table->string('pilihan3')->nullable();
             $table->string('pilihan4')->nullable();
             $table->string('pilihan_benar')->nullable();
+            $table->string('url_video')->nullable();
             $table->timestamps();
         });
     }

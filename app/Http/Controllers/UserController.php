@@ -30,8 +30,8 @@ class UserController extends Controller
         if ($request->password == $request->confirm_password) {
             $request->validate([
                 'name' => 'required|min:3|max:50|regex:/^[a-zA-Z ]+$/',
-                'email' => 'required|email|unique:users|ends_with:@gmail.com|ends_with:@yahoo.com|ends_with:@hotmail.com|ends_with:@outlook.com|ends_with:@live.com',
-                'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/|confirmed',
+                'email' => 'required|email|unique:users|ends_with:@gmail.com',
+                'password' => 'required|min:8',
                 'phone' => 'required|numeric|digits_between:10,13|starts_with:0|unique:users'
             ]);
 

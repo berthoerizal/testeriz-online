@@ -155,10 +155,7 @@
                 <input type="password" class="form-control item" id="password"
                     class="@error('password') is-invalid @enderror" name="password" placeholder="Password">
             </div>
-            <div class="form-group">
-                <input id="password-confirm" type="password" class="form-control item" name="password_confirmation"
-                    autocomplete="new-password" placeholder="Konfirmasi Password">
-            </div>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-block create-account">
                     {{ __('Register') }}

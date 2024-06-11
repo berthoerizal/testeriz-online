@@ -14,11 +14,11 @@
             <div class="col-md-3 mb-3">
                 <div class="card">
 
-                    {{-- @if (Auth::user()->id == $user->id)
+                    @if (Auth::user()->id == $user->id)
                         <div class="card-header">
                             @include('profile.update_password')
                         </div>
-                    @endif --}}
+                    @endif
 
 
                     <div class="card-body">

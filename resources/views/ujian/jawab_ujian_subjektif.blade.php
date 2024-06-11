@@ -91,9 +91,10 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <th width="5%">#</th>
-                                            <th width="40%">Pertanyaan</th>
+                                            <th width="20%">Pertanyaan</th>
                                             <th width="15%">Gambar</th>
-                                            <th width="40%">Jawaban Peserta</th>
+                                            <th width="20">Video</th>
+                                            <th width="30%">Jawaban Peserta</th>
                                         </thead>
                                         <tbody>
                                             <?php
@@ -111,6 +112,19 @@
                                                 @else
                                                     <td><i>Tidak ada gambar.</i></td>
                                                 @endif
+
+                                                @if ($row->url_video != null)
+                                                    <td>
+                                                        <iframe width="100%" height="100%"
+                                                            src="https://www.youtube.com/embed/{{ $row->url_video }}"
+                                                            frameborder="0"
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowfullscreen></iframe>
+                                                    </td>
+                                                @else
+                                                    <td><i>Tidak ada video.</i></td>
+                                                @endif
+
                                                 <td>
                                                     <input type="hidden" name="id[]" value="{{ $row->id_jawab }}" />
                                                     <textarea class="form-control form-control-sm" name="jawaban[]" id="jawaban" placeholder="...">{{ old('jawaban') }}</textarea>

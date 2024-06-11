@@ -147,6 +147,7 @@
                                                 <tr>
                                                     <th width="5%">#</th>
                                                     <th width="10%" class="text-center">Gambar</th>
+                                                    <th>URL Video</th>
                                                     <th>Pertanyaan</th>
                                                     <th>Kunci Jawaban</th>
                                                     <th>Jawaban Peserta</th>
@@ -167,6 +168,15 @@
                                                                 class="img img-responsive img-thumbnail" width="50px">
                                                         @else
                                                             @include('nilai.modal_image')
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($jawab->url_video)
+                                                            <?php $url_video = 'https://www.youtube.com/watch?v=' . substr($jawab->url_video, -11); ?>
+                                                            <a href="{{ $url_video }}"
+                                                                target="_blank">{{ $jawab->url_video }}</a>
+                                                        @else
+                                                            -
                                                         @endif
                                                     </td>
                                                     <td><?php echo $jawab->pertanyaan; ?>
@@ -213,6 +223,7 @@
                                             <tr>
                                                 <th width="5%">#</th>
                                                 <th width="10%" class="text-center">Gambar</th>
+                                                <th>URL Video</th>
                                                 <th>Pertanyaan</th>
                                                 <th>Kunci Jawaban</th>
                                                 <th>Jawaban Peserta</th>
@@ -232,6 +243,15 @@
                                                             class="img img-responsive img-thumbnail" width="50px">
                                                     @else
                                                         @include('nilai.modal_image')
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($jawab->url_video)
+                                                        <?php $url_video = 'https://www.youtube.com/watch?v=' . substr($jawab->url_video, -11); ?>
+                                                        <a href="{{ $url_video }}"
+                                                            target="_blank">{{ $jawab->url_video }}</a>
+                                                    @else
+                                                        -
                                                     @endif
                                                 </td>
                                                 <td><?php echo $jawab->pertanyaan; ?></td>

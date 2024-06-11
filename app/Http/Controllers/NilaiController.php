@@ -72,7 +72,7 @@ class NilaiController extends Controller
         $title = "Info Nilai";
         $jawabs = DB::table('jawabs')
             ->join('tanyas', 'jawabs.id_tanya', '=', 'tanyas.id')
-            ->select('jawabs.*', 'tanyas.pertanyaan', 'tanyas.gambar')
+            ->select('jawabs.*', 'tanyas.pertanyaan', 'tanyas.gambar', 'tanyas.url_video')
             ->where('jawabs.id_soal', $id_soal)
             ->where('jawabs.id_user', $id_user)
             ->get();

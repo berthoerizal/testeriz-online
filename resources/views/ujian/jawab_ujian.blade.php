@@ -66,6 +66,17 @@
                                                     </td>
                                                 @endif
                                             </tr>
+                                            @if ($row->url_video != null)
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <div class="embed-responsive embed-responsive-16by9">
+                                                            <iframe class="embed-responsive-item"
+                                                                src="https://www.youtube.com/embed/{{ $row->url_video }}"
+                                                                allowfullscreen></iframe>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>

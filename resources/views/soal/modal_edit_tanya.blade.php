@@ -26,6 +26,20 @@
                                     <textarea name="pertanyaan" id="pertanyaan" class="form-control textarea-tinymce" height="100px">{{ $tanya->pertanyaan }}</textarea>
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="url_video">URL Video</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"
+                                                id="basic-addon3">https://www.youtube.com/watch?v=</span>
+                                        </div>
+                                        <input type="text" name="url_video" id="url_video"
+                                            value="{{ $tanya->url_video }}" placeholder="Kode Video Youtube"
+                                            class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="gambar">Gambar</label><br />
@@ -93,6 +107,22 @@
                                         <option value="pilihan4" @if ($tanya->pilihan_benar == 'pilihan4') selected @endif>Opsi
                                             4</option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="url_video">URL Video</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"
+                                                id="basic-addon3">https://www.youtube.com/watch?v=</span>
+                                        </div>
+                                        <input type="text" name="url_video" id="url_video"
+                                            value="{{ old('url_video') }}" placeholder="Kode Video Youtube"
+                                            class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                                    </div>
                                 </div>
                             </div>
                         </div>

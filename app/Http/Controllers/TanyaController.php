@@ -56,14 +56,16 @@ class TanyaController extends Controller
                     'pilihan3' => $request->pilihan3,
                     'pilihan4' => $request->pilihan4,
                     'pilihan_benar' => $request->jawaban,
-                    'gambar' => $gambar
+                    'gambar' => $gambar,
+                    'url_video' => $request->url_video
                 ]);
             } else {
                 $tanya = Tanya::create([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,
                     'jawaban' => $request->jawaban,
-                    'gambar' => $gambar
+                    'gambar' => $gambar,
+                    'url_video' => $request->url_video
                 ]);
             }
         } else {
@@ -78,14 +80,16 @@ class TanyaController extends Controller
                     'pilihan3' => $request->pilihan3,
                     'pilihan4' => $request->pilihan4,
                     'pilihan_benar' => $request->jawaban,
-                    'gambar' => $gambar
+                    'gambar' => $gambar,
+                    'url_video' => $request->url_video
                 ]);
             } else {
                 $tanya = Tanya::create([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,
                     'jawaban' => $request->jawaban,
-                    'gambar' => $gambar
+                    'gambar' => $gambar,
+                    'url_video' => $request->url_video
                 ]);
             }
         }
@@ -143,14 +147,16 @@ class TanyaController extends Controller
                     'pilihan3' => $request->pilihan3,
                     'pilihan4' => $request->pilihan4,
                     'pilihan_benar' => $request->jawaban,
-                    'gambar' => $gambar
+                    'gambar' => $gambar,
+                    'url_video' => $request->url_video
                 ]);
             } else {
                 $tanya->update([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,
                     'jawaban' => $request->jawaban,
-                    'gambar' => $gambar
+                    'gambar' => $gambar,
+                    'url_video' => $request->url_video
                 ]);
             }
 
@@ -172,13 +178,15 @@ class TanyaController extends Controller
                     'pilihan2' => $request->pilihan2,
                     'pilihan3' => $request->pilihan3,
                     'pilihan4' => $request->pilihan4,
-                    'pilihan_benar' => $request->jawaban
+                    'pilihan_benar' => $request->jawaban,
+                    'url_video' => $request->url_video
                 ]);
             } else {
                 $tanya->update([
                     'id_soal' => $soal->id,
                     'pertanyaan' => $request->pertanyaan,
-                    'jawaban' => $request->jawaban
+                    'jawaban' => $request->jawaban,
+                    'url_video' => $request->url_video
                 ]);
             }
 

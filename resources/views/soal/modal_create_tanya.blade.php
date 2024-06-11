@@ -37,6 +37,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="url_video">URL Video</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"
+                                                id="basic-addon3">https://www.youtube.com/watch?v=</span>
+                                        </div>
+                                        <input type="text" name="url_video" id="url_video"
+                                            value="{{ old('url_video') }}" placeholder="Kode Video Youtube"
+                                            class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
@@ -88,6 +104,20 @@
                                         <option value="pilihan3">Opsi 3</option>
                                         <option value="pilihan4">Opsi 4</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="url_video">URL Video</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"
+                                                id="basic-addon3">https://www.youtube.com/watch?v=</span>
+                                        </div>
+                                        <input type="text" name="url_video" id="url_video"
+                                            value="{{ old('url_video') }}" placeholder="Kode Video Youtube"
+                                            class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -13,7 +13,6 @@ class CreateTanyasTable extends Migration
      */
     public function up()
     {
-        // protected $fillable = ['id_soal', 'pertanyaan', 'gambar', 'jawaban', 'pilihan1', 'pilihan2', 'pilihan3'];
         Schema::create('tanyas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('id_soal');

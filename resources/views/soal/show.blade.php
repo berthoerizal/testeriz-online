@@ -56,6 +56,7 @@
                                         <tr>
                                             <th width="5%">#</th>
                                             <th width="10%" class="text-center">Gambar</th>
+                                            <th width="10%">Video</th>
                                             <th>Pertanyaan</th>
                                             <th>Jawaban Benar</th>
                                             <th width="20%" class="text-center">Aksi</th>
@@ -77,6 +78,7 @@
                                                     @include('soal.modal_image')
                                                 @endif
                                             </td>
+                                            <td>{{ $tanya->url_video }}</td>
                                             <td><?php echo $tanya->pertanyaan; ?></td>
                                             <td>{{ $tanya->jawaban }}</td>
                                             <td>

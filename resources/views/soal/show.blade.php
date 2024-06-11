@@ -78,7 +78,15 @@
                                                     @include('soal.modal_image')
                                                 @endif
                                             </td>
-                                            <td>{{ $tanya->url_video }}</td>
+                                            <td>
+                                                @if ($tanya->url_video)
+                                                    <?php $url_video = 'https://www.youtube.com/watch?v=' . substr($tanya->url_video, -11); ?>
+                                                    <a href="{{ $url_video }}"
+                                                        target="_blank">{{ $tanya->url_video }}</a>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
                                             <td><?php echo $tanya->pertanyaan; ?></td>
                                             <td>{{ $tanya->jawaban }}</td>
                                             <td>

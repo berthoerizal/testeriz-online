@@ -91,7 +91,7 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <th width="5%">#</th>
-                                            <th width="20%">Pertanyaan</th>
+                                            <th width="30%">Pertanyaan</th>
                                             <th width="15%">Gambar</th>
                                             <th width="20">Video</th>
                                             <th width="30%">Jawaban Peserta</th>

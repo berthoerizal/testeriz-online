@@ -23,15 +23,33 @@ class UjianController extends Controller
     {
         $title = "Ikuti Ujian | Sudah Selesai";
 
-        //sudah ujian
         $soal = DB::table('daftars')
             ->join('soals', 'daftars.id_soal', '=', 'soals.id')
             ->join('users', 'soals.id_user', '=', 'users.id')
             ->join('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
-            ->select('soals.*', 'daftars.status_daftar', 'users.name', 'jenis_soal.nama_jenis_soal')
+            ->leftJoin('jawabs', 'soals.id', '=', 'jawabs.id_soal')
+            ->select(
+                'soals.*',
+                'daftars.status_daftar',
+                'users.name',
+                'jenis_soal.nama_jenis_soal',
+                DB::raw('COALESCE(
+            CASE 
+                WHEN soals.status_nilai = "publish" THEN 
+                    CASE 
+                        WHEN soals.jenis_soal = "subjektif" THEN SUM(jawabs.status_jawab)
+                        ELSE (SUM(jawabs.status_jawab) / (SELECT COUNT(*) FROM tanyas WHERE tanyas.id_soal = soals.id)) * 100
+                    END
+                ELSE 0
+            END, 
+            0
+        ) as total_nilai'), // Calculating the score based on question type and status_nilai
+                DB::raw('COALESCE(SUM(jawabs.status_jawab), 0) as terjawab') // Sum of answered status
+            )
             ->where('daftars.id_user', '=', Auth::user()->id)
             ->where('soals.status_soal', 'publish')
             ->where('daftars.status_daftar', '!=', 1)
+            ->groupBy('soals.id', 'daftars.status_daftar', 'users.name', 'jenis_soal.nama_jenis_soal')
             ->orderBy('soals.id', 'desc')
             ->get();
 
@@ -48,10 +66,29 @@ class UjianController extends Controller
             ->join('soals', 'daftars.id_soal', '=', 'soals.id')
             ->join('users', 'soals.id_user', '=', 'users.id')
             ->join('jenis_soal', 'soals.id_jenis_soal', '=', 'jenis_soal.id')
-            ->select('soals.*', 'daftars.status_daftar', 'users.name', 'jenis_soal.nama_jenis_soal')
+            ->leftJoin('jawabs', 'soals.id', '=', 'jawabs.id_soal')
+            ->select(
+                'soals.*',
+                'daftars.status_daftar',
+                'users.name',
+                'jenis_soal.nama_jenis_soal',
+                DB::raw('COALESCE(
+            CASE 
+                WHEN soals.status_nilai = "publish" THEN 
+                    CASE 
+                        WHEN soals.jenis_soal = "subjektif" THEN SUM(jawabs.status_jawab)
+                        ELSE (SUM(jawabs.status_jawab) / (SELECT COUNT(*) FROM tanyas WHERE tanyas.id_soal = soals.id)) * 100
+                    END
+                ELSE 0
+            END, 
+            0
+        ) as total_nilai'), // Calculating the score based on question type and status_nilai
+                DB::raw('COALESCE(SUM(jawabs.status_jawab), 0) as terjawab') // Sum of answered status
+            )
             ->where('daftars.id_user', '=', Auth::user()->id)
             ->where('soals.status_soal', 'publish')
             ->where('daftars.status_daftar', '!=', 2)
+            ->groupBy('soals.id', 'daftars.status_daftar', 'users.name', 'jenis_soal.nama_jenis_soal')
             ->orderBy('soals.id', 'desc')
             ->get();
 

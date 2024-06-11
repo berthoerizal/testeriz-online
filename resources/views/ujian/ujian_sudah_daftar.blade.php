@@ -28,6 +28,7 @@
                                 <th>Dibuat Oleh</th>
                                 <th>Jadwal Mulai</th>
                                 <th>Jadwal Selesai</th>
+                                <th>Nilai</th>
                                 <th width="10%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -50,7 +51,7 @@
                                     @else
                                         <?php echo date('d-m-Y', strtotime($soal->tanggal_mulai)) .
                                             '
-                                                                                                                        ' .
+                                                                                                                                                                ' .
                                             $soal->waktu_mulai; ?>
                                     @endif
                                 </td>
@@ -61,6 +62,7 @@
                                         <?php echo date('d-m-Y', strtotime($soal->tanggal_selesai)) . ' ' . $soal->waktu_selesai; ?>
                                     @endif
                                 </td>
+                                <td class="text-center"><?php echo $soal->total_nilai; ?></td>
                                 <td class="text-center">
                                     <a class="btn btn-primary btn-sm" href="{{ route('soal.show', $soal->slug_soal) }}">
                                         <i class="fa fa-book"></i>

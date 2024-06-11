@@ -237,6 +237,7 @@
                                             <th>Judul</th>
                                             <th>Kategori</th>
                                             <th>Tanggal</th>
+                                            <th>Nilai</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -247,6 +248,7 @@
                                                 <td>{{ $s->nama_jenis_soal }}</td>
                                                 <td class="text-center">
                                                     {{ date('d/m/Y H:i:s', strtotime($s->created_at)) }}</td>
+                                                <td class="text-center">{{ $s->total_nilai }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
